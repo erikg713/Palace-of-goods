@@ -20,4 +20,3 @@ def create_transaction():
     return jsonify({"message": "Transaction created"}), 201
 
 
-
