@@ -1,17 +1,23 @@
-from flask import request, jsonify
-from services.transaction_service import TransactionService
-from routes import transactions
+from flask import Blueprint, request, jsonify
+from app.models import Transaction, db
 
-@transactions.route('/transactions', methods=['POST'])
-def create_transaction():
-    data = request.json
-    transaction = TransactionService.create_transaction(data)
-    return jsonify({'success': True, 'transaction': transaction}), 201
+transactions_bp = Blueprint('transactions', __name__)
 
-@transactions.route('/transactions', methods=['GET'])
+@transactions_bp.route('/', methods=['GET'])
 def get_transactions():
-    user_id = request.args.get('user_id')
-    transactions = TransactionService.get_user_transactions(user_id)
-    return jsonify({'success': True, 'transactions': transactions}), 200
+    transactions = Transaction.query.all()
+    transactions_list = [{"id": transaction.id, "user_id": transaction.user_id, "product_id": transaction.product_id, "status": transaction.status} for transaction in transactions]
+    return jsonify(transactions_list), 200
+
+@transactions_bp.route('/', methods=['POST'])
+def create_transaction():
+    data = request.get_json()
+    new_transaction = Transaction(user_id=data['user_id'], product_id=data['product_id'], status=data['status'])
+
+    db.session.add(new_transaction)
+    db.session.commit()
+
+    return jsonify({"message": "Transaction created"}), 201
+
 
 
