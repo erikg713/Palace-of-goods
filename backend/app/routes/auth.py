@@ -1,26 +1,32 @@
 from flask import Blueprint, request, jsonify
-from app.models import User, db
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_jwt_extended import create_access_token
+from app.models import User, db
 
-auth = Blueprint('auth', __name__)
+auth_bp = Blueprint('auth', __name__)
 
-@auth.route('/api/auth/register', methods=['POST'])
+@auth_bp.route('/register', methods=['POST'])
 def register():
     data = request.get_json()
-    username = data['username']
-    password = generate_password_hash(data['password'])
-    new_user = User(username=username, password=password)
+    hashed_password = generate_password_hash(data['password'])
+    new_user = User(username=data['username'], email=data['email'], password_hash=hashed_password)
+    
     db.session.add(new_user)
     db.session.commit()
+    
     return jsonify({"message": "User created"}), 201
 
-@auth.route('/api/auth/login', methods=['POST'])
+@auth_bp.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
-    user = User.query.filter_by(username=data['username']).first()
-    if user and check_password_hash(user.password, data['password']):
-        return jsonify({"message": "Login successful"}), 200
-    return jsonify({"message": "Invalid credentials"}), 401
+    user = User.query.filter_by(email=data['email']).first()
+
+    if user and check_password_hash(user.password_hash, data['password']):
+        access_token = create_access_token(identity=user.id)
+        return jsonify(access_token=access_token), 200
+
+    return jsonify({"error": "Invalid credentials"}), 401
+
 
 
 
