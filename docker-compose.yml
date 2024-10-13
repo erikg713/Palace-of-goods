@@ -1,1 +1,54 @@
 
+version: '3.8'
+
+services:
+  frontend:
+    image: node:16  # Specify Node.js version
+    working_dir: /app
+    volumes:
+      - ./frontend:/app  # Mount the local frontend directory into the container
+    command: npm run dev  # Start the Next.js frontend in development mode
+    ports:
+      - "3000:3000"  # Expose port 3000 for the frontend
+    depends_on:
+      - backend  # Wait for backend to be up before starting
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:5000/api  # API URL for the frontend to communicate with backend
+
+  backend:
+    build:
+      context: ./backend  # Dockerfile for the Flask backend should be in the backend directory
+    volumes:
+      - ./backend:/app  # Mount the local backend directory into the container
+    working_dir: /app
+    command: flask run --host=0.0.0.0 --port=5000  # Run the Flask server on port 5000
+    ports:
+      - "5000:5000"  # Expose port 5000 for the backend
+    environment:
+      - FLASK_ENV=development  # Enable development mode
+      - DATABASE_URL=postgresql://postgres:password@db:5432/palace_of_goods
+      - JWT_SECRET_KEY=your_jwt_secret_key  # Make sure to set the actual secret key
+    depends_on:
+      - db  # Ensure the database starts before the backend
+
+  db:
+    image: postgres:13  # Use PostgreSQL 13
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password  # Change this password if necessary
+      POSTGRES_DB: palace_of_goods  # Database name for your application
+    volumes:
+      - db_data:/var/lib/postgresql/data  # Persist PostgreSQL data between container restarts
+    ports:
+      - "5432:5432"  # Expose PostgreSQL port for external connections
+
+  adminer:
+    image: adminer  # Optional: Use Adminer for database management
+    restart: always
+    ports:
+      - "8080:8080"  # Expose Adminer on port 8080
+    depends_on:
+      - db  # Ensure the database is running before Adminer starts
+
+volumes:
+  db_data:  # Persistent volume for PostgreSQL data
