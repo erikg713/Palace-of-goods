@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 echo; echo
-echo "reverse-proxy: Starting up!"
+echo "reverse-proxy: Starting up for Palace of Goods!"
 echo "  - HTTPS: ${HTTPS}"
 echo "  - FRONTEND_DOMAIN_NAME: ${FRONTEND_DOMAIN_NAME}"
 echo "  - BACKEND_DOMAIN_NAME: ${BACKEND_DOMAIN_NAME}"
@@ -11,31 +11,37 @@ set -e
 # Directory used by certbot to serve certificate requests challenges:
 mkdir -p /var/www/certbot
 
-if [ $HTTPS = "true" ]; then
+# Helper function to obtain SSL certificates
+obtain_ssl_certificate() {
+  local domain_name=$1
+  echo "Obtaining SSL certificate for domain: ${domain_name}"
+  certbot certonly --noninteractive --agree-tos --register-unsafely-without-email --nginx -d ${domain_name}
+}
+
+if [ "$HTTPS" = "true" ]; then
   echo "Starting in SSL mode"
 
+  # Remove the default Nginx config to avoid conflicts
   rm /etc/nginx/conf.d/default.conf
 
-  echo
-  echo "Obtaining SSL certificate for frontend domain name: ${FRONTEND_DOMAIN_NAME}"
-  certbot certonly --noninteractive --agree-tos --register-unsafely-without-email --nginx -d ${FRONTEND_DOMAIN_NAME}
+  # Obtain SSL certificates for both frontend and backend
+  obtain_ssl_certificate "$FRONTEND_DOMAIN_NAME"
+  obtain_ssl_certificate "$BACKEND_DOMAIN_NAME"
 
-  echo
-  echo "Obtaining SSL certificate for backend domain name: ${BACKEND_DOMAIN_NAME}"
-  certbot certonly --noninteractive --agree-tos --register-unsafely-without-email --nginx -d ${BACKEND_DOMAIN_NAME}
-
-  # The above certbot command will start the nginx service in the background as a service.
-  # However, we need the `nginx -g "daemon off;"` to be the main nginx process running on the container, and
-  # we need it to be able to start listening on ports 80/443. If we don't stop the nginx process here, we'll
-  # encounter the following error: `nginx: [emerg] bind() to 0.0.0.0:443 failed (98: Address already in use)`.
+  # Stop any Nginx process that Certbot might have started in the background
+  echo "Stopping background Nginx to avoid port conflicts"
   service nginx stop
 
+  # Substitute the environment variables into the SSL Nginx config template
   envsubst '$FRONTEND_DOMAIN_NAME $BACKEND_DOMAIN_NAME $DOMAIN_VALIDATION_KEY' < /nginx-ssl.conf.template > /etc/nginx/conf.d/default.conf
+
 else
-  echo "Starting in http mode"
+  echo "Starting in HTTP mode"
+  
+  # Substitute the environment variables into the HTTP Nginx config template
   envsubst '$FRONTEND_DOMAIN_NAME $BACKEND_DOMAIN_NAME $DOMAIN_VALIDATION_KEY' < /nginx.conf.template > /etc/nginx/conf.d/default.conf
 fi
 
-# Call the command that the base image was initally supposed to run
-# See: XXX
+# Start Nginx in the foreground
+echo "Starting Nginx..."
 nginx -g "daemon off;"
