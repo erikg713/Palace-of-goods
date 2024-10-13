@@ -1,24 +1,25 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react';
+import { fetchUserData } from '../api';  // Using Axios to fetch data
 
 const Profile = () => {
-  const [user, setUser] = useState(null);
+  const [userData, setUserData] = useState(null);
 
   useEffect(() => {
-    // Fetch user data from Pi Network or your backend
-    axios.get('/api/user/profile')
-      .then(response => setUser(response.data))
-      .catch(error => console.error('Error fetching user profile:', error));
+    const getUserData = async () => {
+      try {
+        const data = await fetchUserData();
+        setUserData(data);
+      } catch (error) {
+        console.error("Failed to fetch user data", error);
+      }
+    };
+    getUserData();
   }, []);
 
-  if (!user) return <div>Loading...</div>;
-
   return (
-    <div className="profile-page">
-      <h1>{user.username}'s Profile</h1>
-      <p>Email: {user.email}</p>
-      <p>Pi Balance: {user.piBalance}</p>
-      {/* Add functionality to update user info */}
+    <div>
+      <h1>User Profile</h1>
+      {userData ? <pre>{JSON.stringify(userData, null, 2)}</pre> : <p>Loading...</p>}
     </div>
   );
 };
