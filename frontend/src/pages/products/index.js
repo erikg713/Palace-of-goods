@@ -1,4 +1,7 @@
 import { useEffect, useState } from 'react';
+import { PiNetwork } from 'pi-sdk';
+
+const pi = new PiNetwork();
 
 export default function Products() {
   const [products, setProducts] = useState([]);
@@ -9,16 +12,5 @@ export default function Products() {
       .then(data => setProducts(data));
   }, []);
 
-  return (
-    <div>
-      <h2>Products</h2>
-      <ul>
-        {products.map(product => (
-          <li key={product.id}>
-            {product.name} - ${product.price}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
+  const handle
+
