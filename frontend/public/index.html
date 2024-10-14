@@ -65,6 +65,30 @@
         sandbox: true,  // Use true for sandbox mode in Pi Network
         appId: "your_pi_network_sdk_key"  // Ensure you replace with the key from .env
       });
+<script> 
+        // Authenticate the user, and get permission to request payments from them
+        const scopes = ['payments','username'];
+
+        // Read more about this callback in the SDK reference:
+        function onIncompletePaymentFound(payment) { 
+            console.log('incomplete payment found')
+            paymentId = payment.identifier
+            txid = payment.transaction.txid
+            $.post('/payment/complete',
+                    {
+                        paymentId: paymentId,
+                        txid: txid,
+                        debug: 'cancel'
+                    }
+                )
+        };
+        Pi.authenticate(scopes, onIncompletePaymentFound).then(function(auth) {
+          console.log(`Hi there! You're ready to make payments!`)
+          const accessToken = auth.accessToken
+        }).catch(function(error) {
+          console.error(error);
+        });
+    </script>
     </script>
   </body>
 </html>
