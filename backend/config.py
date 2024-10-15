@@ -1,8 +1,10 @@
 import os
 
 class Config:
-    SECRET_KEY = os.environ.get('SECRET_KEY') or 'your-secret-key'
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'postgresql://username:password@localhost/palace_of_goods'
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
-    JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY') or 'your-jwt-secret'
-    PI_NETWORK_API_KEY = os.environ.get('PI_NETWORK_API_KEY')
+    SECRET_KEY = os.getenv('SECRET_KEY', 'default_secret')
+    DATABASE_URL = os.getenv('DATABASE_URL')
+    FLASK_ENV = os.getenv('FLASK_ENV', 'production')
+
+    @staticmethod
+    def init_app(app):
+        pass
