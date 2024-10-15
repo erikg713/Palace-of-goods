@@ -1,26 +1,24 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager
-from blueprints.auth import auth_bp
-from blueprints.marketplace import marketplace_bp
-from blueprints.transaction import transaction_bp
+from config import Config
+from models import db
+from blueprints import api_blueprint
 
-app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your_secret_key'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://user:password@localhost/palace_of_goods'
-db = SQLAlchemy(app)
-login_manager = LoginManager(app)
-login_manager.login_view = 'auth.login'
+def create_app():
+    app = Flask(__name__)
+    app.config.from_object(Config)
 
-from models.user import User
+    # Initialize the database
+    db.init_app(app)
 
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
+    # Register blueprints
+    app.register_blueprint(api_blueprint, url_prefix='/api')
 
-app.register_blueprint(auth_bp, url_prefix='/auth')
-app.register_blueprint(marketplace_bp, url_prefix='/marketplace')
-app.register_blueprint(transaction_bp, url_prefix='/transaction')
+    @app.route('/')
+    def index():
+        return {"message": "Welcome to the Palace of Goods API"}
 
-if __name__ == '__main__':
-    app.run(debug=True)
+    return app
+
+if __name__ == "__main__":
+    app = create_app()
+    app.run(host='0.0.0.0', port=5000)
