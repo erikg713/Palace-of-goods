@@ -1,4 +1,4 @@
-version: '3'
+version: '3.8'
 services:
   frontend:
     build: ./frontend
@@ -8,6 +8,10 @@ services:
       - ./frontend:/app
     environment:
       - REACT_APP_API_URL=http://localhost:5000
+    depends_on:
+      - backend
+    networks:
+      - palace-network
 
   backend:
     build: ./backend
@@ -16,17 +20,23 @@ services:
     volumes:
       - ./backend:/app
     environment:
-      - FLASK_ENV=development
+      - FLASK_ENV=production
       - DATABASE_URL=mongodb://db:27017/palace-of-goods
+      - SECRET_KEY=${SECRET_KEY}
     depends_on:
       - db
+    networks:
+      - palace-network
 
   db:
     image: mongo
+    container_name: mongo
     volumes:
       - mongo-data:/data/db
     ports:
       - "27017:27017"
+    networks:
+      - palace-network
 
   reverse-proxy:
     build: ./reverse-proxy
@@ -36,6 +46,12 @@ services:
     depends_on:
       - frontend
       - backend
+    networks:
+      - palace-network
 
 volumes:
   mongo-data:
+
+networks:
+  palace-network:
+    driver: bridge
