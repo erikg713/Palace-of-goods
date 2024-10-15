@@ -1,54 +1,41 @@
-
-version: '3.8'
-
+version: '3'
 services:
   frontend:
-    image: node:16  # Specify Node.js version
-    working_dir: /app
-    volumes:
-      - ./frontend:/app  # Mount the local frontend directory into the container
-    command: npm run dev  # Start the Next.js frontend in development mode
+    build: ./frontend
     ports:
-      - "3000:3000"  # Expose port 3000 for the frontend
-    depends_on:
-      - backend  # Wait for backend to be up before starting
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
     environment:
-      - NEXT_PUBLIC_API_URL=http://localhost:5000/api  # API URL for the frontend to communicate with backend
+      - REACT_APP_API_URL=http://localhost:5000
 
   backend:
-    build:
-      context: ./backend  # Dockerfile for the Flask backend should be in the backend directory
-    volumes:
-      - ./backend:/app  # Mount the local backend directory into the container
-    working_dir: /app
-    command: flask run --host=0.0.0.0 --port=5000  # Run the Flask server on port 5000
+    build: ./backend
     ports:
-      - "5000:5000"  # Expose port 5000 for the backend
+      - "5000:5000"
+    volumes:
+      - ./backend:/app
     environment:
-      - FLASK_ENV=development  # Enable development mode
-      - DATABASE_URL=postgresql://postgres:password@db:5432/palace_of_goods
-      - JWT_SECRET_KEY=your_jwt_secret_key  # Make sure to set the actual secret key
+      - FLASK_ENV=development
+      - DATABASE_URL=mongodb://db:27017/palace-of-goods
     depends_on:
-      - db  # Ensure the database starts before the backend
+      - db
 
   db:
-    image: postgres:13  # Use PostgreSQL 13
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password  # Change this password if necessary
-      POSTGRES_DB: palace_of_goods  # Database name for your application
+    image: mongo
     volumes:
-      - db_data:/var/lib/postgresql/data  # Persist PostgreSQL data between container restarts
+      - mongo-data:/data/db
     ports:
-      - "5432:5432"  # Expose PostgreSQL port for external connections
+      - "27017:27017"
 
-  adminer:
-    image: adminer  # Optional: Use Adminer for database management
-    restart: always
+  reverse-proxy:
+    build: ./reverse-proxy
     ports:
-      - "8080:8080"  # Expose Adminer on port 8080
+      - "80:80"
+      - "443:443"
     depends_on:
-      - db  # Ensure the database is running before Adminer starts
+      - frontend
+      - backend
 
 volumes:
-  db_data:  # Persistent volume for PostgreSQL data
+  mongo-data:
