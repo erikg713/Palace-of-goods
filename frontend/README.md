@@ -1,104 +1,162 @@
-# Palace of Goods - Frontend
 
-## Overview
 
-The Palace of Goods is a Web3 marketplace application that enables users to interact with the Pi Network. This frontend is built using React and allows users to authenticate, view products, make transactions, and manage their accounts in a decentralized environment.
+# Backend - Palace of Goods
 
-## Features
+This is the **backend** service for the Palace of Goods project, built using **Flask** with **MongoDB** for the database and **JWT-based authentication** for user management. The backend exposes REST API endpoints for product management and user authentication.
 
-- **User Authentication**: Users can sign up and log in using their Pi Network accounts.
-- **Product Management**: Users can view a list of products available for sale.
-- **Transaction Handling**: Users can view their transaction history and perform transactions using Pi tokens.
-- **Dashboard**: A dedicated dashboard for user-related activities.
-- **Responsive Design**: The application is designed to be mobile-friendly.
+## Table of Contents
+- [Project Structure](#project-structure)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Environment Variables](#environment-variables)
+- [Running the Backend](#running-the-backend)
+- [Using Docker](#using-docker)
+- [API Endpoints](#api-endpoints)
+- [Security Considerations](#security-considerations)
 
-## Technologies Used
+## Project Structure
 
-- **React**: Frontend framework for building user interfaces.
-- **React Router**: For managing routing within the application.
-- **Axios**: For making HTTP requests to the backend API.
-- **CSS**: For styling the application.
+```
+backend/
+├── app.py                 # Main Flask application entry point
+├── config.py              # Application configuration (loads environment variables)
+├── models.py              # MongoDB models (Product, User) with MongoEngine
+├── blueprints.py          # API routes (product CRUD and user authentication)
+├── requirements.txt       # Backend dependencies (Flask, MongoEngine, JWT)
+├── Dockerfile             # Dockerfile for backend Flask application
+└── .env                   # Environment variables (SECRET_KEY, JWT_SECRET, DATABASE_URL)
+```
 
-## Getting Started
+## Prerequisites
 
-### Prerequisites
+Make sure you have the following installed:
 
-- Node.js (v14 or higher)
-- npm (v6 or higher)
+- **Python 3.9+**
+- **pip** (Python package installer)
 
-### Installation
+Or, if using **Docker**:
+- [Docker](https://www.docker.com/get-started)
+- [Docker Compose](https://docs.docker.com/compose/install/)
 
-1. Clone the repository:
+## Installation
 
-   ```bash
-   git clone https://github.com/erikg713/Palace-of-goods.git
-   ```
+### 1. Install Dependencies
+Navigate to the `backend/` directory and install the Python dependencies:
+```bash
+cd backend
+pip install -r requirements.txt
+```
 
-2. Navigate to the frontend directory:
+### 2. Set Up Environment Variables
+Create a `.env` 
 
-   ```bash
-   cd Palace-of-goods/frontend
-   ```
+# Frontend - Palace of Goods
 
-3. Install the dependencies:
+This is the **frontend** service for the Palace of Goods project, built using **React** and **Axios** for communicating with the backend. The frontend allows users to browse products, manage their accounts, and interact with the marketplace.
 
-   ```bash
-   npm install
-   ```
+## Table of Contents
+- [Project Structure](#project-structure)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Environment Variables](#environment-variables)
+- [Running the Frontend](#running-the-frontend)
+- [Using Docker](#using-docker)
+- [Available Scripts](#available-scripts)
+- [Security Considerations](#security-considerations)
 
-### Running the Application
+## Project Structure
 
-To start the application in development mode, run:
+```
+frontend/
+├── public/
+│   └── index.html         # Main HTML file for React
+├── src/
+│   ├── api.js             # Axios API client for communicating with the backend
+│   ├── App.js             # Main React component (routes to Home, Products)
+│   ├── index.js           # Main React entry point
+│   ├── components/
+│   │   ├── Home.js        # Home page component
+│   │   └── Products.js    # Products page component
+├── package.json           # Frontend dependencies (React, Axios, Bootstrap, React Router)
+├── Dockerfile             # Dockerfile for frontend React application
+└── .env                   # Environment variables (REACT_APP_API_URL)
+```
+
+## Prerequisites
+
+Make sure you have the following installed:
+
+- **Node.js 14+**
+- **npm** (Node package manager)
+
+Or, if using **Docker**:
+- [Docker](https://www.docker.com/get-started)
+- [Docker Compose](https://docs.docker.com/compose/install/)
+
+## Installation
+
+### 1. Install Dependencies
+Navigate to the `frontend/` directory and install the required npm packages:
+```bash
+cd frontend
+npm install
+```
+
+### 2. Set Up Environment Variables
+Create a `.env` file in the `frontend/` directory:
+
+#### **frontend/.env**
+```bash
+REACT_APP_API_URL=http://localhost:5000
+```
+
+- `REACT_APP_API_URL`: The base URL for the backend API.
+
+## Running the Frontend
+
+### 1. Running Without Docker
+Start the frontend application locally by running:
 
 ```bash
 npm start
 ```
 
-This will start the React application, and you can access it at `http://localhost:3000`.
+This will start the React application on `http://localhost:3000`.
 
-### Building for Production
+### 2. Running with Docker
+Alternatively, you can use Docker to run the frontend in a container.
 
-To build the application for production, use:
+#### 1. Build the Docker Image
+Navigate to the `frontend/` directory and run:
 
 ```bash
-npm run build
+docker build -t palace-frontend .
 ```
 
-This creates a `build` directory with a production build of your app.
+#### 2. Run the Container
+After building the image, run the container:
 
-### API Integration
-
-The frontend communicates with the backend API hosted at the specified endpoint. Ensure the backend is running before using the frontend.
-
-### Directory Structure
-
-```
-frontend/
-│
-├── public/                 # Static files
-├── src/
-│   ├── components/         # React components
-│   ├── context/            # React Context API for global state management
-│   ├── services/           # Services for API calls
-│   ├── utils/              # Utility functions
-│   └── App.js              # Main application component
-│
-├── package.json            # Project dependencies and scripts
-└── README.md               # Project documentation
+```bash
+docker run -d -p 3000:3000 --env-file .env palace-frontend
 ```
 
-## Contributing
+The frontend will be available at `http://localhost:3000`.
 
-If you would like to contribute to this project, please fork the repository and submit a pull request.
+## Available Scripts
 
-## License
+In the `frontend/` directory, you can run the following commands:
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+### 1. `npm start`
+Starts the development server, serving the React app on `http://localhost:3000`.
 
-## Contact
+### 2. `npm run build`
+Builds the production-ready React app.
 
-For inquiries or feedback, please contact the project maintainer:
+### 3. `npm run test`
+Runs the tests for the React app.
 
-- Name: Erik G.
-- Email: [erikgordon985@gmail.com]
-```
+## Security Considerations
+
+- **Environment Variables**: Ensure sensitive values like `REACT_APP_API_URL` are set correctly for development and production environments.
+- **Axios**: Axios is used to make secure HTTP requests to the backend. Ensure proper error handling is in place for failed requests.
+- **HTTPS**: Ensure the application runs behind HTTPS in production to secure communication between the frontend and backend.
