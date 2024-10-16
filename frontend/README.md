@@ -1,4 +1,6 @@
+Sure! Below are the **second** and **third** `README.md` files for the **backend** and **frontend** directories. These files will focus specifically on setting up and running the backend and frontend services, including instructions for environment variables, Docker setup, and running the application.
 
+---
 
 # Backend - Palace of Goods
 
@@ -40,15 +42,7 @@ Or, if using **Docker**:
 
 ## Installation
 
-### 1. Install Dependencies
-Navigate to the `backend/` directory and install the Python dependencies:
-```bash
-cd backend
-pip install -r requirements.txt
-```
-
-### 2. Set Up Environment Variables
-Create a `.env` 
+### 1. Install 
 
 # Frontend - Palace of Goods
 
@@ -160,3 +154,5 @@ Runs the tests for the React app.
 - **Environment Variables**: Ensure sensitive values like `REACT_APP_API_URL` are set correctly for development and production environments.
 - **Axios**: Axios is used to make secure HTTP requests to the backend. Ensure proper error handling is in place for failed requests.
 - **HTTPS**: Ensure the application runs behind HTTPS in production to secure communication between the frontend and backend.
+
+---
