@@ -1,17 +1,3 @@
-FROM nginx:1.23.1
-
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y certbot python3-certbot-nginx
-
-COPY ./docker/nginx.conf.template /nginx.conf.template
-COPY ./docker/nginx-ssl.conf.template /nginx-ssl.conf.template
-COPY ./docker/entrypoint.sh /var/entrypoint.sh
-
-RUN chmod +x /var/entrypoint.sh
-
-# Default nginx configuration has only one worker process running. "Auto" is a better setting for scalability.
-RUN sed -i "s/worker_processes/#worker_processes/" /etc/nginx/nginx.conf && \
-    echo "worker_processes auto;" >> /etc/nginx/nginx.conf && \
-    echo "worker_rlimit_nofile 16384;" >> /etc/nginx/nginx.conf
-
-CMD ["/var/entrypoint.sh"]
-
+FROM nginx:alpine
+COPY ./docker/nginx.conf /etc/nginx/nginx.conf
+EXPOSE 80 443
