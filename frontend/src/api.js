@@ -1,11 +1,18 @@
-// src/api.js
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5000'
+  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5000/api',
+  headers: {
+    'Content-Type': 'application/json'
+  }
 });
 
 export const fetchProducts = async () => {
-  const response = await API.get('/api/products');
-  return response.data;
+  try {
+    const response = await API.get('/products');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    throw error;
+  }
 };
