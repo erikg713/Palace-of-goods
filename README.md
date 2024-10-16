@@ -293,12 +293,6 @@ Creates a new product (JWT required).
 
 ## Conclusion
 
-This project provides a full-stack web application using **React**, **Flask**, and **MongoDB** with **JWT-based authentication**. By leveraging **Docker**, all services can be orchestrated efficiently and can be easily deployed to any
+This project provides a full-stack web application using **React**, **Flask**, and **MongoDB** with **JWT-based authentication**. By leveraging **Docker**, all services can be orchestrated efficiently and can be easily deployed to any platform that supports Docker.
 
- platform that supports Docker.
-
-Feel free to reach out if you encounter any issues, and happy coding!
-
----
-
-This `README.md` is designed to give users all the necessary details to set up and run your project with security and efficiency in mind. Let me know if you need any adjustments or further clarifications!
+Feel free to reach out if you encounter any issues.
