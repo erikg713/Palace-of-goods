@@ -1,181 +1,263 @@
-# Backend - Palace of Goods
+# Palace of Goods Backend
 
-This is the **backend** service for the Palace of Goods project, built using **Flask** with **MongoDB** for the database and **JWT-based authentication** for user management. The backend exposes REST API endpoints for product management and user authentication.
+## Dependencies and Setup Guide
 
-## Table of Contents
-- [Project Structure](#project-structure)
-- [Prerequisites](#prerequisites)
-- [Installation](#installation)
-- [Environment Variables](#environment-variables)
-- [Running the Backend](#running-the-backend)
-- [Using Docker](#using-docker)
-- [API Endpoints](#api-endpoints)
-- [Security Considerations](#security-considerations)
+### Core Dependencies
+
+```txt
+# Web Framework and Extensions
+Flask==2.3.3
+Flask-RESTful==0.3.10
+Flask-CORS==4.0.0
+Flask-JWT-Extended==4.5.2
+
+# Database
+pymongo==4.5.0
+flask-mongoengine==1.0.0
+mongoengine==0.27.0
+
+# Security and Authentication
+bcrypt==4.0.1
+PyJWT==2.8.0
+python-dotenv==1.0.0
+
+# API Documentation
+flask-swagger-ui==4.11.1
+apispec==6.3.0
+
+# Testing
+pytest==7.4.2
+pytest-cov==4.1.0
+
+# Development Tools
+python-dotenv==1.0.0
+black==23.9.1
+flake8==6.1.0
+
+# Web3 Integration
+web3==6.9.0
+eth-account==0.9.0
+```
+
+## Setup Instructions
+
+### 1. Create Virtual Environment
+
+```bash
+# Create virtual environment
+python -m venv venv
+
+# Activate virtual environment
+# On Windows:
+venv\Scripts\activate
+# On macOS/Linux:
+source venv/bin/activate
+```
+
+### 2. Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Environment Configuration
+
+Create a `.env` file in the backend directory:
+
+```env
+# Flask Configuration
+FLASK_APP=app.py
+FLASK_ENV=development
+DEBUG=True
+PORT=5000
+
+# Security
+SECRET_KEY=your_secret_key_here
+JWT_SECRET_KEY=your_jwt_secret_here
+
+# Database
+MONGODB_URI=mongodb://localhost:27017/palace_of_goods
+DATABASE_NAME=palace_of_goods
+
+# Web3 Configuration
+WEB3_PROVIDER_URI=https://mainnet.infura.io/v3/your_infura_key
+CONTRACT_ADDRESS=your_contract_address
+```
+
+### 4. Database Setup
+
+Ensure MongoDB is running locally or update the `MONGODB_URI` in `.env` to point to your MongoDB instance.
+
+```bash
+# Start MongoDB locally (if using Docker)
+docker run -d -p 27017:27017 --name mongodb mongo:latest
+```
+
+### 5. Initialize Database
+
+```bash
+# Run database initialization script
+python scripts/init_db.py
+```
+
+### 6. Run Development Server
+
+```bash
+# Start Flask development server
+flask run
+```
 
 ## Project Structure
 
 ```
 backend/
-├── app.py                 # Main Flask application entry point
-├── config.py              # Application configuration (loads environment variables)
-├── models.py              # MongoDB models (Product, User) with MongoEngine
-├── blueprints.py          # API routes (product CRUD and user authentication)
-├── requirements.txt       # Backend dependencies (Flask, MongoEngine, JWT)
-├── Dockerfile             # Dockerfile for backend Flask application
-└── .env                   # Environment variables (SECRET_KEY, JWT_SECRET, DATABASE_URL)
+├── app/
+│   ├── __init__.py
+│   ├── models/
+│   │   ├── __init__.py
+│   │   ├── user.py
+│   │   └── product.py
+│   ├── routes/
+│   │   ├── __init__.py
+│   │   ├── auth.py
+│   │   └── products.py
+│   └── utils/
+│       ├── __init__.py
+│       └── helpers.py
+├── tests/
+│   ├── __init__.py
+│   ├── test_auth.py
+│   └── test_products.py
+├── config.py
+├── requirements.txt
+└── app.py
 ```
 
-## Prerequisites
+## Development Guidelines
 
-Make sure you have the following installed:
+### Code Style
 
-- **Python 3.9+**
-- **pip** (Python package installer)
+Follow PEP 8 guidelines and use provided development tools:
 
-Or, if using **Docker**:
-- [Docker](https://www.docker.com/get-started)
-- [Docker Compose](https://docs.docker.com/compose/install/)
-
-## Installation
-
-### 1. Install Dependencies
-Navigate to the `backend/` directory and install the Python dependencies:
 ```bash
-cd backend
+# Format code
+black .
+
+# Check code style
+flake8
+
+# Run tests
+pytest
+```
+
+### Testing
+
+```bash
+# Run tests with coverage report
+pytest --cov=app tests/
+```
+
+### API Documentation
+
+Access API documentation at:
+- Swagger UI: `http://localhost:5000/api/docs`
+- OpenAPI JSON: `http://localhost:5000/api/swagger.json`
+
+## Common Issues and Solutions
+
+### 1. MongoDB Connection Issues
+
+```bash
+# Check MongoDB status
+mongo --eval "db.serverStatus()"
+
+# Common solution: Ensure MongoDB is running
+docker ps | grep mongo
+```
+
+### 2. Dependencies Conflicts
+
+```bash
+# Create fresh virtual environment
+rm -rf venv
+python -m venv venv
+source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 2. Set Up Environment Variables
-Create a `.env` file in the `backend/` directory to store sensitive environment variables:
+### 3. JWT Token Issues
 
-#### **backend/.env**
+Verify JWT configuration in `.env`:
 ```bash
-SECRET_KEY=mysecretkey
-JWT_SECRET_KEY=myjwtsecretkey
-DATABASE_URL=mongodb://localhost:27017/palace-of-goods
-FLASK_ENV=development
+# Generate new secret key
+python -c "import secrets; print(secrets.token_hex(32))"
 ```
 
-- `SECRET_KEY`: Used by Flask for session security.
-- `JWT_SECRET_KEY`: Secret key for generating JWT tokens.
-- `DATABASE_URL`: MongoDB connection string.
+## Deployment Checklist
 
-## Running the Backend
+- [ ] Update `FLASK_ENV` to `production`
+- [ ] Generate new secret keys
+- [ ] Configure production MongoDB URI
+- [ ] Enable CORS restrictions
+- [ ] Set up logging
+- [ ] Configure rate limiting
+- [ ] Enable SSL/TLS
+- [ ] Set up monitoring
 
-### 1. Running Without Docker
-After setting up the environment and dependencies, start the Flask application:
-
-```bash
-export FLASK_APP=app.py
-flask run
-```
-
-This will start the backend on `http://localhost:5000`.
-
-### 2. Running with Docker
-Alternatively, you can use Docker to run the backend in a container.
-
-#### 1. Build the Docker Image
-Navigate to the `backend/` directory and run:
+## Database Migrations
 
 ```bash
-docker build -t palace-backend .
+# Create new migration
+flask db migrate -m "description"
+
+# Apply migrations
+flask db upgrade
 ```
 
-#### 2. Run the Container
-After building the image, run the container:
+## Logging Configuration
 
+Add to `.env` for production:
+
+```env
+LOG_LEVEL=INFO
+LOG_FILE=app.log
+```
+
+## Security Best Practices
+
+1. **Keep Dependencies Updated**
 ```bash
-docker run -d -p 5000:5000 --env-file .env palace-backend
+pip list --outdated
+pip install --upgrade package_name
 ```
 
-The backend will be available at `http://localhost:5000`.
-
-## API Endpoints
-
-### 1. **User Registration**: `POST /api/register`
-Registers a new user.
-
-**Request**:
-```json
-{
-  "username": "johndoe",
-  "email": "john@example.com",
-  "password": "secretpassword"
+2. **Enable Security Headers**
+```python
+# In app configuration
+SECURE_HEADERS = {
+    'X-Frame-Options': 'SAMEORIGIN',
+    'X-XSS-Protection': '1; mode=block',
+    'X-Content-Type-Options': 'nosniff'
 }
 ```
 
-**Response**:
-```json
-{
-  "id": "user-id",
-  "username": "johndoe",
-  "email": "john@example.com"
-}
+3. **Rate Limiting**
+```python
+RATELIMIT_DEFAULT = "100 per hour"
+RATELIMIT_STORAGE_URL = "redis://localhost:6379/0"
 ```
 
-### 2. **User Login**: `POST /api/login`
-Authenticates a user and returns a JWT token.
+## Contributing
 
-**Request**:
-```json
-{
-  "username": "johndoe",
-  "password": "secretpassword"
-}
-```
+1. Create feature branch
+2. Follow code style guidelines
+3. Add tests for new features
+4. Update documentation
+5. Submit pull request
 
-**Response**:
-```json
-{
-  "access_token": "jwt-token"
-}
-```
+## Support
 
-### 3. **Get Products**: `GET /api/products`
-Retrieves a list of products.
-
-**Response**:
-```json
-[
-  {
-    "id": "product-id",
-    "name": "Product Name",
-    "price": 100.0,
-    "description": "Product description",
-    "stock": 20
-  }
-]
-```
-
-### 4. **Create Product**: `POST /api/products`
-Creates a new product (JWT required).
-
-**Request**:
-```json
-{
-  "name": "New Product",
-  "price": 100.0,
-  "description": "Description of the new product",
-  "stock": 50
-}
-```
-
-**Response**:
-```json
-{
-  "id": "product-id",
-  "name": "New Product",
-  "price": 100.0,
-  "description": "Description of the new product",
-  "stock": 50
-}
-```
-
-## Security Considerations
-
-- **Environment Variables**: Ensure all sensitive data (such as `SECRET_KEY` and `JWT_SECRET_KEY`) is stored in environment variables and not hardcoded into the application.
-- **Password Hashing**: Passwords are hashed using **Werkzeug** before being stored in the database.
-- **JWT**: Use JWT tokens to protect API routes that require authentication. Ensure JWT tokens are securely generated and verified on the server.
-
----
+For support:
+- Create GitHub issue
+- Email: backend-support@palaceofgoods.com
+- Documentation: `/api/docs`
