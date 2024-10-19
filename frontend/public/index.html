@@ -1,1 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="description" content="Palace of Goods Web3 Marketplace" />
+    <meta name="author" content="Palace of Goods Team" />
+    
+    <title>Palace of Goods</title>
+
+    <!-- Pi Network SDK -->
+    <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+
+    <!-- Link to Favicon -->
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+
+    <!-- Web Manifest -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+
+    <!-- Meta Tags for Social Media -->
+    <meta property="og:title" content="Palace of Goods" />
+    <meta property="og:description" content="A decentralized marketplace powered by Web3 and Pi Network." />
+    <meta property="og:image" content="%PUBLIC_URL%/logo.png" />
+    <meta property="og:url" content="https://sandbox.minepi.com/app/palace-of-goods" />
+    
+    <!-- Adding CSS styles -->
+    <link href="%PUBLIC_URL%/css/styles.css" rel="stylesheet" />
+
+    <!-- Important for SEO -->
+    <meta name="robots" content="index, follow" />
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+
+    <!-- React App JS -->
+    <script src="%PUBLIC_URL%/static/js/bundle.js"></script>
+    <script src="%PUBLIC_URL%/static/js/main.chunk.js"></script>
+
+    <!-- Initialize Pi Network SDK -->
+    <script>
+      Pi.init({
+        version: "2.0",
+        sandbox: true,
+        appId: "SBWTJLK2XQG5JHPQ5T227KPJ74ECTCLJUFUNWOOMW2YUKYCPILITMNMQ"  // Make sure to replace with the correct key from .env
+      });
+    </script>
+  </body>
+</html>
 
