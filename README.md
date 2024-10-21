@@ -162,6 +162,6 @@ For more information on Pi Network payments, refer to the [Pi Developer Document
 
 ## License
 
-This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the Pi Network trademark. ## See the [LICENSE](LICENSE) file for details.
 
 ---
