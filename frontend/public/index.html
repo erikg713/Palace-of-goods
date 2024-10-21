@@ -28,7 +28,7 @@
     <meta name="twitter:image" content="%PUBLIC_URL%/assets/social-preview.png" />
 
     <!-- Title and Favicon -->
-    <title>Palace of Goods - Web3 Marketplace</title>
+    <title>Palace of Goods</title>
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/apple-icon.png" /> <!-- For Apple devices -->
 
@@ -48,7 +48,10 @@
     <meta http-equiv="Referrer-Policy" content="strict-origin" /> <!-- Protect referrer data leakage -->
     
     <!-- Pi Network SDK -->
-    <script src="https://sdk.minepi.com/pi-sdk.js" async></script> <!-- Load asynchronously to not block rendering -->
+    <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+<script>
+  Pi.init({ version: "2.0", sandbox: true });
+</script> <!-- Load asynchronously to not block rendering -->
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
