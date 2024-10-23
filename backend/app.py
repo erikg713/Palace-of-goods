@@ -5,6 +5,13 @@ from flask_login import LoginManager
 from mongoengine import connect, DoesNotExist
 from blueprints.auth import auth_bp
 from blueprints.marketplace import marketplace_bp
+from blueprints import register_blueprints
+
+# Initialize the app
+app = Flask(__name__)
+
+# Register blueprints
+register_blueprints(app)
 
 # Initialize the Flask app
 app = Flask(__name__)
