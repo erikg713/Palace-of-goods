@@ -7,3 +7,16 @@ export const initializePiNetwork = () => {
     appId: process.env.REACT_APP_PI_NETWORK_SDK_KEY
   });
 };
+const signIn = async () => {
+  const scopes = ["username", "payments"]; 
+  const authResponse = await window.Pi.authenticate(scopes, onIncompletePaymentFound);
+
+  await signInUser(authResponse);
+  setUser(authResponse.user);
+};
+
+const signInUser = (authResult: any) => {
+  axios.post("/signin", { authResult })
+    .then(() => setShowModal(false))  
+    .catch(err => console.error(err));  
+};
