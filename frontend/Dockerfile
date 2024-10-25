@@ -1,13 +1,15 @@
-FROM node:14
+FROM node:22.10.0-alpine.3.19
+
+LABEL maintainer="jonas@sliplane.io"
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY package* ./
+
 RUN npm install
 
 COPY . .
 
 EXPOSE 3000
 
-CMD ["npm", "start"]
-
+CMD ["node", "index.js"]
