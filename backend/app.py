@@ -2,6 +2,71 @@ import os
 import logging
 from flask import Flask, request, jsonify
 from flask_login import LoginManager
+from flask import Flask, request, jsonify
+import requests
+import os
+
+app = Flask(__name__)
+
+PI_API_KEY = os.getenv("PI_API_KEY", "your_pi_api_key")
+header = {
+    'Authorization': f"Key {PI_API_KEY}"
+}
+
+@app.route('/payment/approve', methods=['POST'])
+def approve_payment():
+    payment_id = request.json.get('paymentId')
+    if not payment_id:
+        return jsonify({"error": "Missing paymentId"}), 400
+
+    approve_url = f"https://api.minepi.com/v2/payments/{payment_id}/approve"
+    try:
+        response = requests.post(approve_url, headers=header)
+        response.raise_for_status()
+        return jsonify(response.json())
+    except requests.RequestException as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/payment/complete', methods=['POST'])
+def complete_payment():
+    payment_id = request.json.get('paymentId')
+    txid = request.json.get('txid')
+    if not payment_id or not txid:
+        return jsonify({"error": "Missing paymentId or txid"}), 400
+
+    complete_url = f"https://api.minepi.com/v2/payments/{payment_id}/complete"
+    data = {'txid': txid}
+    try:
+        response = requests.post(complete_url, headers=header, json=data)
+        response.raise_for_status()
+        return jsonify(response.json())
+    except requests.RequestException as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/payment/cancel', methods=['POST'])
+def cancel_payment():
+    payment_id = request.json.get('paymentId')
+    if not payment_id:
+        return jsonify({"error": "Missing paymentId"}), 400
+
+    cancel_url = f"https://api.minepi.com/v2/payments/{payment_id}/cancel"
+    try:
+        response = requests.post(cancel_url, headers=header)
+        response.raise_for_status()
+        return jsonify(response.json())
+    except requests.RequestException as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/payment/error', methods=['POST'])
+def report_payment_error():
+    payment_id = request.json.get('paymentId')
+    error = request.json.get('error')
+    if not payment_id:
+        return jsonify({"error": "Missing paymentId"}), 400
+
+    print(f"Error with payment {payment_id}: {error}")
+    return jsonify({"status": "error logged"}), 200
+
 from mongoengine import connect, DoesNotExist
 from blueprints.auth import auth_bp
 from blueprints.marketplace import marketplace_bp
