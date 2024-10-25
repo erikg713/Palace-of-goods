@@ -58,3 +58,7 @@ app.register_blueprint(marketplace_bp, url_prefix='/marketplace')
 # Run the app with safe debug mode
 if __name__ == '__main__':
     app.run(debug=app.config['DEBUG'])
+Python
+header = {
+    'Authorization': "Key YOUR-API-KEY"
+}
