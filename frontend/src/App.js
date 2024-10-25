@@ -1,3 +1,17 @@
+import React from 'react';
+import PaymentComponent from './components/PaymentComponent';
+
+function App() {
+  return (
+    <div>
+      <h1>Welcome to Palace of Goods</h1>
+      <PaymentComponent />
+    </div>
+  );
+}
+
+export default App;
+
 import React, { lazy, Suspense } from 'react';
 
 // Lazy load a component, like the product list
