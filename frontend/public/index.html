@@ -1,163 +1,149 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <!-- Basic Page Setup -->
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    
-    <!-- SEO and Metadata -->
-    <meta name="description" content="Palace of Goods - A decentralized marketplace using Web3 and Pi Network." />
-    <meta name="keywords" content="Web3, marketplace, Pi Network, blockchain, decentralized, buy, sell, trade" />
-    <meta name="robots" content="index, follow" />
-    <meta name="theme-color" content="#0d6efd" /> <!-- Sets the theme color for mobile browsers -->
-    <meta name="author" content="Palace of Goods Team" />
+<head>
+  <!-- Basic Page Setup -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="Palace of Goods" />
-    <meta property="og:description" content="A decentralized marketplace powered by Web3 and Pi Network." />
-    <meta property="og:image" content="%PUBLIC_URL%/assets/social-preview.png" /> <!-- Custom image for sharing -->
-    <meta property="og:url" content="https://sandbox.minepi.com/app/palace-of-goods" />
-    <meta property="og:site_name" content="Palace of Goods" />
+  <!-- SEO and Metadata -->
+  <meta name="description" content="Palace of Goods - A decentralized marketplace using Web3 and Pi Network." />
+  <meta name="keywords" content="Web3, marketplace, Pi Network, blockchain, decentralized, buy, sell, trade" />
+  <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#0d6efd" />
+  <meta name="author" content="Palace of Goods Team" />
 
-    <!-- Twitter Cards -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Palace of Goods" />
-    <meta name="twitter:description" content="A decentralized Web3 marketplace powered by Pi Network." />
-    <meta name="twitter:image" content="%PUBLIC_URL%/assets/social-preview.png" />
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Palace of Goods" />
+  <meta property="og:description" content="A decentralized marketplace powered by Web3 and Pi Network." />
+  <meta property="og:image" content="/assets/social-preview.png" />
+  <meta property="og:url" content="https://sandbox.minepi.com/app/palace-of-goods" />
+  <meta property="og:site_name" content="Palace of Goods" />
 
-    <!-- Title and Favicon -->
-    <title>Palace of Goods</title>
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/apple-icon.png" /> <!-- For Apple devices -->
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Palace of Goods" />
+  <meta name="twitter:description" content="A decentralized Web3 marketplace powered by Pi Network." />
+  <meta name="twitter:image" content="/assets/social-preview.png" />
 
-    <!-- Manifest for Progressive Web App (PWA) -->
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+  <!-- Title and Favicon -->
+  <title>Palace of Goods</title>
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" href="/apple-icon.png" />
 
-    <!-- CSS Files -->
-    <link href="%PUBLIC_URL%/css/styles.css" rel="stylesheet" />
-    
-    <!-- Preload critical resources -->
-    <link rel="preload" href="%PUBLIC_URL%/static/js/main.chunk.js" as="script" />
-    <link rel="preload" href="%PUBLIC_URL%/css/styles.css" as="style" />
+  <!-- Manifest for Progressive Web App (PWA) -->
+  <link rel="manifest" href="/manifest.json" />
 
-    <!-- Security Improvements -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://sdk.minepi.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://sandbox.minepi.com; frame-src 'self';" />
-    <meta http-equiv="Permissions-Policy" content="geolocation=(self), microphone=(), camera=()" /> <!-- Limit unnecessary permissions -->
-    <meta http-equiv="Referrer-Policy" content="strict-origin" /> <!-- Protect referrer data leakage -->
-    
-    <!-- Pi Network SDK -->
-    <script src="https://sdk.minepi.com/pi-sdk.js"></script>
-<script>
-  Pi.init({ version: "2.0", sandbox: true });
-</script> <!-- Load asynchronously to not block rendering -->
-  </head>
-  Javascript
-<script>
-    // we're doing payments
-    const Pi = window.Pi;
-    // main payments function
-    function createPayment() {
-        const paymentData = {
-            amount: .01,
-            memo: "This buys you three more insults! What a deal!!!",
-            metadata: { insultid: 123456 }
-        };
-        // the SDK does all this like magic
-        const paymentCallbacks = {
-            onReadyForServerApproval: (paymentDTO) => {
-                paymentId = paymentDTO
-                $.post('/payment/approve', {
-                    paymentId: paymentId,
-                    accessToken: accessToken
-                })
-            },
-            onReadyForServerCompletion: (paymentDTO, txid) => {
-                paymentId = paymentDTO
-                txid = txid
-                $.post('/payment/complete',
-                        {
-                            paymentId: paymentId,
-                            txid: txid,
-                            debug: 'complete'
-                        }
-                    )
-            },
-            onCancel: (paymentDTO) => {
-                paymentId = paymentDTO.identifier
-                $.post('/payment/complete',
-                        {
-                            paymentId: paymentId,
-                            debug: 'cancel'
-                        }
-                    )
-            },
-            onError: (paymentDTO) => {
-                console.log('There was an error ', paymentDTO)
-                paymentId = paymentDTO.identifier
-                $.post('/payment/error',
-                        {
-                            paymentDTO: paymentDTO,
-                            paymentId: paymentId,
-                            debug: 'error'
-                        }
-                    )
-            },
-            onIncompletePaymentFound: function(paymentDTO)
-            {
-                paymentId = paymentDTO.identifier
-                console.log('onIncompletePaymentFound', paymentId)
-                $.post('/payment/complete',
-                        {
-                            paymentId: paymentId,
-                            txid: paymentDTO.transaction.txid
-                        }
-                    )
-             }
-        };
-        Pi.createPayment(paymentData, paymentCallbacks);
-    }
-</script>
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
+  <!-- CSS Files -->
+  <link href="/css/styles.css" rel="stylesheet" />
 
-    <!-- JavaScript Files -->
-    <script src="%PUBLIC_URL%/static/js/bundle.js" defer></script> <!-- Defer loading for faster rendering -->
-    <script src="%PUBLIC_URL%/static/js/main.chunk.js" defer></script>
+  <!-- Preload critical resources -->
+  <link rel="preload" href="/static/js/main.chunk.js" as="script" />
+  <link rel="preload" href="/css/styles.css" as="style" />
 
-    <!-- Pi Network SDK Initialization -->
-    <script>
+  <!-- Security Improvements -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://sdk.minepi.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://sandbox.minepi.com; frame-src 'self';" />
+  <meta http-equiv="Permissions-Policy" content="geolocation=(self), microphone=(), camera=()" />
+  <meta http-equiv="Referrer-Policy" content="strict-origin" />
+
+  <!-- Pi Network SDK -->
+  <script src="https://sdk.minepi.com/pi-sdk.js" async></script> <!-- Load asynchronously -->
+</head>
+<body>
+  <noscript>You need to enable JavaScript to run this app.</noscript>
+  <div id="root"></div>
+
+  <!-- Pi Network SDK Initialization -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
       Pi.init({
         version: "2.0",
-        sandbox: true,  // Use true for sandbox mode in Pi Network
-        appId: "your_pi_network_sdk_key"  // Ensure you replace with the key from .env
+        sandbox: true,  // Set to false in production
+        appId: "your_pi_network_sdk_key"
       });
-    </script>
-    Javascript
-<script> 
-    // Authenticate the user, and get permission to request payments from them:
+    });
+  </script>
+
+  <!-- JavaScript Files -->
+  <script src="/static/js/bundle.js" defer></script>
+  <script src="/static/js/main.chunk.js" defer></script>
+
+  <script>
+    const Pi = window.Pi;
+    let paymentId;
+    let accessToken = "user_access_token"; // Replace with a secure method for managing tokens
+
+    function createPayment() {
+      const paymentData = {
+        amount: 0.01,
+        memo: "This buys you three more insults! What a deal!",
+        metadata: { insultid: 123456 }
+      };
+
+      const paymentCallbacks = {
+        onReadyForServerApproval: (paymentDTO) => {
+          paymentId = paymentDTO.identifier;
+          fetch('/payment/approve', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ paymentId, accessToken })
+          });
+        },
+        onReadyForServerCompletion: (paymentDTO, txid) => {
+          paymentId = paymentDTO.identifier;
+          fetch('/payment/complete', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ paymentId, txid })
+          });
+        },
+        onCancel: (paymentDTO) => {
+          paymentId = paymentDTO.identifier;
+          fetch('/payment/cancel', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ paymentId })
+          });
+        },
+        onError: (paymentDTO) => {
+          console.error('Payment error:', paymentDTO);
+          paymentId = paymentDTO.identifier;
+          fetch('/payment/error', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ paymentId })
+          });
+        },
+        onIncompletePaymentFound: (paymentDTO) => {
+          paymentId = paymentDTO.identifier;
+          const txid = paymentDTO.transaction.txid;
+          fetch('/payment/complete', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ paymentId, txid })
+          });
+        }
+      };
+
+      Pi.createPayment(paymentData, paymentCallbacks);
+    }
+
     const scopes = ['payments'];
 
-    // Read more about this callback in the SDK reference:
-    function onIncompletePaymentFound(payment) { 
-        paymentId = payment.identifier
-        txid = payment.transaction.txid
-        $.post('/payment/complete',
-                {
-                    paymentId: paymentId,
-                    txid: txid,
-                    debug: 'cancel'
-                }
-            )
-    };
-
-    Pi.authenticate(scopes, onIncompletePaymentFound).then(function(auth) {
-console.log('woot!');
-    }).catch(function(error) {
-      console.error(error);
+    Pi.authenticate(scopes, (payment) => {
+      const paymentId = payment.identifier;
+      const txid = payment.transaction.txid;
+      fetch('/payment/complete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ paymentId, txid })
+      });
+    }).then((auth) => {
+      console.log('Authentication successful:', auth);
+    }).catch((error) => {
+      console.error('Authentication error:', error);
     });
-</script>
-  </body>
+  </script>
+</body>
 </html>
