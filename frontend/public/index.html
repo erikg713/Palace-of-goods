@@ -46,6 +46,20 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://sdk.minepi.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://sandbox.minepi.com; frame-src 'self';" />
   <meta http-equiv="Permissions-Policy" content="geolocation=(self), microphone=(), camera=()" />
   <meta http-equiv="Referrer-Policy" content="strict-origin" />
+  
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Add this inside <head> -->
+  <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+  <script>
+    Pi.init({ version: "2.0", sandbox: true });
+  </script>
+</head>
+<body>
+  <div id="root"></div>
+</body>
+</html>
 
   <!-- Pi Network SDK -->
   <script src="https://sdk.minepi.com/pi-sdk.js" async></script> <!-- Load asynchronously -->
