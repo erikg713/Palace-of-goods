@@ -53,6 +53,72 @@
   Pi.init({ version: "2.0", sandbox: true });
 </script> <!-- Load asynchronously to not block rendering -->
   </head>
+  Javascript
+<script>
+    // we're doing payments
+    const Pi = window.Pi;
+    // main payments function
+    function createPayment() {
+        const paymentData = {
+            amount: .01,
+            memo: "This buys you three more insults! What a deal!!!",
+            metadata: { insultid: 123456 }
+        };
+        // the SDK does all this like magic
+        const paymentCallbacks = {
+            onReadyForServerApproval: (paymentDTO) => {
+                paymentId = paymentDTO
+                $.post('/payment/approve', {
+                    paymentId: paymentId,
+                    accessToken: accessToken
+                })
+            },
+            onReadyForServerCompletion: (paymentDTO, txid) => {
+                paymentId = paymentDTO
+                txid = txid
+                $.post('/payment/complete',
+                        {
+                            paymentId: paymentId,
+                            txid: txid,
+                            debug: 'complete'
+                        }
+                    )
+            },
+            onCancel: (paymentDTO) => {
+                paymentId = paymentDTO.identifier
+                $.post('/payment/complete',
+                        {
+                            paymentId: paymentId,
+                            debug: 'cancel'
+                        }
+                    )
+            },
+            onError: (paymentDTO) => {
+                console.log('There was an error ', paymentDTO)
+                paymentId = paymentDTO.identifier
+                $.post('/payment/error',
+                        {
+                            paymentDTO: paymentDTO,
+                            paymentId: paymentId,
+                            debug: 'error'
+                        }
+                    )
+            },
+            onIncompletePaymentFound: function(paymentDTO)
+            {
+                paymentId = paymentDTO.identifier
+                console.log('onIncompletePaymentFound', paymentId)
+                $.post('/payment/complete',
+                        {
+                            paymentId: paymentId,
+                            txid: paymentDTO.transaction.txid
+                        }
+                    )
+             }
+        };
+        Pi.createPayment(paymentData, paymentCallbacks);
+    }
+</script>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
