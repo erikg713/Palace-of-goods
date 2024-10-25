@@ -17,3 +17,7 @@ function App() {
 }
 
 export default App;
+Python
+header = {
+    'Authorization': "Key YOUR-API-KEY"
+}
