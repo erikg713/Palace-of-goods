@@ -2,6 +2,6 @@ Flask==2.2.5
 Flask-MongoEngine==0.9.5
 Flask-JWT-Extended==4.3.1
 python-dotenv==0.19.0
-Werkzeug==3.0.3
+Werkzeug==3.0.6
 gunicorn==22.0.0
 
