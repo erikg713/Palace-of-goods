@@ -51,3 +51,40 @@ const ProductDetails = () => {
 
 export default ProductDetails;
 
+// src/components/ProductDetail.js
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
+
+const ProductDetail = () => {
+  const { id } = useParams();
+  const [product, setProduct] = useState(null);
+
+  useEffect(() => {
+    axios.get(`http://localhost:5000/api/products/${id}`)
+      .then(response => setProduct(response.data))
+      .catch(error => console.error("Error fetching product details:", error));
+  }, [id]);
+
+  const addToCart = () => {
+    const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+    cartItems.push(product);
+    localStorage.setItem('cart', JSON.stringify(cartItems));
+    alert("Product added to cart!");
+  };
+
+  return (
+    <div>
+      {product && (
+        <>
+          <h1>{product.name}</h1>
+          <p>{product.description}</p>
+          <p>Price: {product.price} Pi</p>
+          <button onClick={addToCart}>Add to Cart</button>
+        </>
+      )}
+    </div>
+  );
+};
+
+export default ProductDetail;
