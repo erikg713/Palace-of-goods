@@ -21,9 +21,4 @@ function ProductList() {
                         {product.name} - ${product.price}
                     </li>
                 ))}
-            </ul>
-        </div>
-    );
-}
-
-export default ProductList;
+            </ul
