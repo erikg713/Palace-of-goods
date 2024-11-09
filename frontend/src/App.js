@@ -1,27 +1,17 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import PaymentComponent from './components/PaymentComponent';
 
-function App() {
-  return (
-    <div>
-      <h1>Welcome to Palace of Goods</h1>
-      <PaymentComponent />
-    </div>
-  );
-}
-
-export default App;
-
-import React, { lazy, Suspense } from 'react';
-
-// Lazy load a component, like the product list
+// Lazy load the ProductList component
 const ProductList = lazy(() => import('./components/ProductList'));
 
 function App() {
   return (
     <div className="App">
       <h1>Welcome to Palace of Goods</h1>
-      
+
+      {/* Payment Component */}
+      <PaymentComponent />
+
       {/* Wrap the lazy-loaded component with Suspense */}
       <Suspense fallback={<div>Loading Products...</div>}>
         <ProductList />
@@ -31,7 +21,3 @@ function App() {
 }
 
 export default App;
-Python
-header = {
-    'Authorization': "Key YOUR-API-KEY"
-}
