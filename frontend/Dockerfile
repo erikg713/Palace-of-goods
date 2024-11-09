@@ -1,11 +1,13 @@
-FROM node:16
+# Frontend Dockerfile
+FROM node:16 as build
 
 WORKDIR /app
 
 COPY . .
 
 RUN npm install
+RUN npm run build
 
-EXPOSE 3000
-
-CMD ["npm", "start"]
+# Production server setup
+FROM nginx:alpine
+COPY --from=build /app/build /usr/share/nginx/html
