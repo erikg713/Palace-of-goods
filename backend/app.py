@@ -1,63 +1,24 @@
-from flask import Flask, jsonify, request
-import requests
-import logging
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+from flask_jwt_extended import JWTManager
+from flask_cors import CORS
+from config import Config
 
 app = Flask(__name__)
-app.config['DEBUG'] = True  # Ensure debug is set
+app.config.from_object(Config)
+db = SQLAlchemy(app)
+jwt = JWTManager(app)
+CORS(app)
 
-# Configure logging
-logging.basicConfig(level=logging.ERROR)
-logger = logging.getLogger(__name__)
+# Register Blueprints
+from routes.auth import auth_bp
+from routes.products import product_bp
+app.register_blueprint(auth_bp, url_prefix="/auth")
+app.register_blueprint(product_bp, url_prefix="/")
 
-header = {"Authorization": "Bearer YOUR_ACCESS_TOKEN"}  # Replace with actual token
+# Initialize Database
+with app.app_context():
+    db.create_all()
 
-@app.route('/payment/complete', methods=['POST'])
-def complete_payment():
-    payment_id = request.json.get('paymentId')
-    txid = request.json.get('txid')
-
-    if not payment_id or not txid:
-        return jsonify({"error": "Missing paymentId or txid"}), 400
-
-    complete_url = f"https://api.minepi.com/v2/payments/{payment_id}/complete"
-    data = {'txid': txid}
-
-    try:
-        response = requests.post(complete_url, headers=header, json=data)
-        response.raise_for_status()
-        return jsonify(response.json())
-    except requests.RequestException as e:
-        logger.error(f"Error completing payment: {e}")
-        return jsonify({"error": str(e)}), 500
-
-@app.route('/payment/cancel', methods=['POST'])
-def cancel_payment():
-    payment_id = request.json.get('paymentId')
-
-    if not payment_id:
-        return jsonify({"error": "Missing paymentId"}), 400
-
-    cancel_url = f"https://api.minepi.com/v2/payments/{payment_id}/cancel"
-
-    try:
-        response = requests.post(cancel_url, headers=header)
-        response.raise_for_status()
-        return jsonify(response.json())
-    except requests.RequestException as e:
-        logger.error(f"Error cancelling payment: {e}")
-        return jsonify({"error": str(e)}), 500
-
-@app.route('/payment/error', methods=['POST'])
-def report_payment_error():
-    payment_id = request.json.get('paymentId')
-    error = request.json.get('error')
-
-    if not payment_id:
-        return jsonify({"error": "Missing paymentId"}), 400
-
-    logger.error(f"Error with payment {payment_id}: {error}")
-    return jsonify({"status": "error logged"}), 200
-
-# Run the app with safe debug mode
-if __name__ == '__main__':
-    app.run(debug=app.config['DEBUG'])
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
