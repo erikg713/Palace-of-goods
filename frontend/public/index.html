@@ -46,20 +46,6 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://sdk.minepi.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://sandbox.minepi.com; frame-src 'self';" />
   <meta http-equiv="Permissions-Policy" content="geolocation=(self), microphone=(), camera=()" />
   <meta http-equiv="Referrer-Policy" content="strict-origin" />
-  
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <!-- Add this inside <head> -->
-  <script src="https://sdk.minepi.com/pi-sdk.js"></script>
-  <script>
-    Pi.init({ version: "2.0", sandbox: true });
-  </script>
-</head>
-<body>
-  <div id="root"></div>
-</body>
-</html>
 
   <!-- Pi Network SDK -->
   <script src="https://sdk.minepi.com/pi-sdk.js" async></script> <!-- Load asynchronously -->
@@ -67,6 +53,11 @@
 <body>
   <noscript>You need to enable JavaScript to run this app.</noscript>
   <div id="root"></div>
+
+  <!-- External JavaScript Files -->
+  <script src="/static/js/bundle.js" defer></script>
+  <script src="/static/js/main.chunk.js" defer></script>
+  <script src="/js/payment.js" defer></script> <!-- Custom script file for Pi payment functions -->
 
   <!-- Pi Network SDK Initialization -->
   <script>
@@ -76,87 +67,6 @@
         sandbox: true,  // Set to false in production
         appId: "your_pi_network_sdk_key"
       });
-    });
-  </script>
-
-  <!-- JavaScript Files -->
-  <script src="/static/js/bundle.js" defer></script>
-  <script src="/static/js/main.chunk.js" defer></script>
-
-  <script>
-    const Pi = window.Pi;
-    let paymentId;
-    let accessToken = "user_access_token"; // Replace with a secure method for managing tokens
-
-    function createPayment() {
-      const paymentData = {
-        amount: 0.01,
-        memo: "This buys you three more insults! What a deal!",
-        metadata: { insultid: 123456 }
-      };
-
-      const paymentCallbacks = {
-        onReadyForServerApproval: (paymentDTO) => {
-          paymentId = paymentDTO.identifier;
-          fetch('/payment/approve', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ paymentId, accessToken })
-          });
-        },
-        onReadyForServerCompletion: (paymentDTO, txid) => {
-          paymentId = paymentDTO.identifier;
-          fetch('/payment/complete', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ paymentId, txid })
-          });
-        },
-        onCancel: (paymentDTO) => {
-          paymentId = paymentDTO.identifier;
-          fetch('/payment/cancel', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ paymentId })
-          });
-        },
-        onError: (paymentDTO) => {
-          console.error('Payment error:', paymentDTO);
-          paymentId = paymentDTO.identifier;
-          fetch('/payment/error', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ paymentId })
-          });
-        },
-        onIncompletePaymentFound: (paymentDTO) => {
-          paymentId = paymentDTO.identifier;
-          const txid = paymentDTO.transaction.txid;
-          fetch('/payment/complete', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ paymentId, txid })
-          });
-        }
-      };
-
-      Pi.createPayment(paymentData, paymentCallbacks);
-    }
-
-    const scopes = ['payments'];
-
-    Pi.authenticate(scopes, (payment) => {
-      const paymentId = payment.identifier;
-      const txid = payment.transaction.txid;
-      fetch('/payment/complete', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ paymentId, txid })
-      });
-    }).then((auth) => {
-      console.log('Authentication successful:', auth);
-    }).catch((error) => {
-      console.error('Authentication error:', error);
     });
   </script>
 </body>
