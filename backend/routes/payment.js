@@ -2,6 +2,7 @@ import express from 'express';
 import PiNetwork from 'pi-backend';
 import dotenv from 'dotenv';
 import { db } from '../config/db';
+import { check, validationResult } from 'express-validator';
 
 dotenv.config();
 
@@ -12,8 +13,26 @@ const apiKey = process.env.PI_API_KEY;
 const walletPrivateSeed = process.env.WALLET_PRIVATE_SEED;
 const pi = new PiNetwork(apiKey, walletPrivateSeed);
 
+// Middleware to handle async errors
+const asyncHandler = fn => (req, res, next) => {
+  Promise.resolve(fn(req, res, next)).catch(next);
+};
+
+// Validation middleware
+const validatePaymentData = [
+  check('userUid').notEmpty().withMessage('User UID is required'),
+  check('amount').isFloat({ gt: 0 }).withMessage('Amount must be a positive number'),
+  check('memo').notEmpty().withMessage('Memo is required'),
+  check('productId').notEmpty().withMessage('Product ID is required')
+];
+
 // Create Payment
-router.post('/create-payment', async (req, res) => {
+router.post('/create-payment', validatePaymentData, asyncHandler(async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
   const { userUid, amount, memo, productId } = req.body;
 
   const paymentData = {
@@ -32,40 +51,58 @@ router.post('/create-payment', async (req, res) => {
       memo,
       payment_id: paymentId,
       txid: null,
+      status: 'created'
     });
     res.json({ paymentId });
   } catch (error) {
-    console.error('Payment creation failed:', error);
+    console.error('Payment creation failed:', error.message);
     res.status(500).json({ error: 'Payment creation failed' });
   }
-});
+}));
 
 // Submit Payment
-router.post('/submit-payment', async (req, res) => {
+router.post('/submit-payment', [
+  check('paymentId').notEmpty().withMessage('Payment ID is required')
+], asyncHandler(async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
   const { paymentId } = req.body;
 
   try {
     const txid = await pi.submitPayment(paymentId);
     await db.updatePaymentTxId(paymentId, txid);
+    await db.updatePaymentStatus(paymentId, 'submitted');
     res.json({ txid });
   } catch (error) {
-    console.error('Payment submission failed:', error);
+    console.error('Payment submission failed:', error.message);
     res.status(500).json({ error: 'Payment submission failed' });
   }
-});
+}));
 
 // Complete Payment
-router.post('/complete-payment', async (req, res) => {
+router.post('/complete-payment', [
+  check('paymentId').notEmpty().withMessage('Payment ID is required'),
+  check('txid').notEmpty().withMessage('Transaction ID is required')
+], asyncHandler(async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
   const { paymentId, txid } = req.body;
 
   try {
     const completedPayment = await pi.completePayment(paymentId, txid);
     await db.completePayment(paymentId, completedPayment);
+    await db.updatePaymentStatus(paymentId, 'completed');
     res.json({ completedPayment });
   } catch (error) {
-    console.error('Payment completion failed:', error);
+    console.error('Payment completion failed:', error.message);
     res.status(500).json({ error: 'Payment completion failed' });
   }
-});
+}));
 
 export default router;
