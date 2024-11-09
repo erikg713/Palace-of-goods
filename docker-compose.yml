@@ -2,24 +2,44 @@ version: '3.8'
 
 services:
   backend:
-    build: ./backend
-    ports:
-      - "5000:5000"
+    build:
+      context: ./backend
+      args:
+        - FLASK_ENV=production
     env_file:
-      - ./backend/.env
+      - ./backend/.env.production
+    volumes:
+      - ./backend:/app
     depends_on:
       - db
 
   frontend:
     build: ./frontend
-    ports:
-      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+    environment:
+      - NODE_ENV=production
 
   db:
     image: postgres:13
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: palace_of_goods
+      POSTGRES_USER: prod_user
+      POSTGRES_PASSWORD: prod_password
+      POSTGRES_DB: palace_of_goods_prod
+    volumes:
+      - pgdata:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - frontend
+      - backend
+
+volumes:
+  pgdata:
