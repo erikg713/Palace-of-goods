@@ -19,3 +19,12 @@ class Config:
         raise ValueError("Critical environment variables are missing: SECRET_KEY or JWT_SECRET_KEY.")
     if not SQLALCHEMY_DATABASE_URI:
         raise ValueError("DATABASE_URL must be set for SQLAlchemy to connect.")
+
+    # Set logging level based on environment
+    LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO").upper()
+    
+    # MongoDB URI (if used in place of SQLAlchemy)
+    MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/palace_of_goods")
+
+    # Debug Mode - Enable only for development environments
+    DEBUG = ENVIRONMENT == "development"
