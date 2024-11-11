@@ -2,7 +2,6 @@
 
 ### **Project README (`README.md`)**
 
-```markdown
 # Palace of Goods
 
 ## Overview
