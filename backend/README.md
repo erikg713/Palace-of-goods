@@ -1,103 +1,274 @@
-## Backend - Palace of Goods
+Palace of Goods Backend
 
-This is the **backend** for the Palace of Goods, a full-stack web app built using **Flask**, **MongoDB**, and **JWT-based authentication**.
+Palace of Goods is an online marketplace where users can browse, buy, sell, or trade a wide variety of items. The platform integrates Pi Network payments, ensuring transactions are fast, secure, and easy.
 
-### Project Structure
+Table of Contents
 
-```bash
-backend/
-├── app.py                 # Main Flask application entry point
-├── config.py              # Application configuration (loads environment variables)
-├── models.py              # MongoDB models (Product, User) with MongoEngine
-├── blueprints.py          # API routes (product CRUD and user authentication)
-├── requirements.txt       # Backend dependencies (Flask, MongoEngine, JWT)
-├── Dockerfile             # Dockerfile for backend Flask application
-└── .env                   # Environment variables (SECRET_KEY, JWT_SECRET, DATABASE_URL)
-```
+Features
 
-### Prerequisites
+Tech Stack
 
-Make sure you have the following installed:
+Prerequisites
 
-- **Python 3.9+**
-- **MongoDB** (if not using Docker)
-- **pip** (Python package manager)
+Installation and Setup
 
-Or, if using **Docker**:
-- [Docker](https://www.docker.com/get-started)
-- [Docker Compose](https://docs.docker.com/compose/install/)
+Running the Application
+
+API Endpoints
+
+Using Pi Payments
+
+Security Considerations
+
+License
+
+
 
 ---
 
-### Installation
+Features
 
-1. **Clone the Repository**:
-   ```bash
-   git clone https://github.com/yourusername/palace-of-goods.git
-   cd backend
-   ```
+User Authentication: Users can register and log in using JWT tokens.
 
-2. **Install Dependencies**:
-   ```bash
-   pip install -r requirements.txt
-   ```
+Product Management: CRUD operations for products (create, read, update, delete).
 
-3. **Set Up Environment Variables**:
-   Create a `.env` file with the following content:
-   ```bash
-   SECRET_KEY=mysecretkey
-   JWT_SECRET_KEY=myjwtsecretkey
-   DATABASE_URL=mongodb://localhost:27017/palace-of-goods
-   FLASK_ENV=development
-   ```
+Pi Network Integration: Secure and fast payments via Pi cryptocurrency.
 
-4. **Run the Application**:
-   ```bash
-   flask run
-   ```
+Database: MongoDB for data storage.
 
-   This will start the backend server on `http://localhost:5000`.
+RESTful API: Exposes API endpoints for frontend integration.
+
+
 
 ---
 
-### Running the Backend with Docker
+Tech Stack
 
-1. **Build the Docker Image**:
-   Navigate to the `backend/` directory and run:
-   ```bash
-   docker build -t palace-backend .
-   ```
+Backend Framework: Flask (Python)
 
-2. **Run the Container**:
-   After building the image, run the container:
-   ```bash
-   docker run -d -p 5000:5000 --env-file .env palace-backend
-   ```
+Database: MongoDB
 
-The backend will be available at `http://localhost:5000`.
+Authentication: JWT (JSON Web Tokens)
+
+Payments: Pi Network API Integration
+
+Containerization: Docker
+
+
 
 ---
 
-### API Endpoints
+Prerequisites
 
-- **User Registration**: `POST /api/register`
-  - Registers a new user.
+Before running the backend, make sure you have the following installed:
 
-- **User Login**: `POST /api/login`
-  - Authenticates a user and returns a JWT token.
+Python 3.9+
 
-- **Get Products**: `GET /api/products`
-  - Retrieves a list of products.
+MongoDB (or Docker for containerized database)
 
-- **Create Product**: `POST /api/products`
-  - Creates a new product (JWT required).
+Pi Network Developer Account (for Pi Payments)
+
+Docker (optional, for containerization)
+
+
+
+---
+
+Installation and Setup
+
+1. Clone the Repository
+
+Clone the project to your local machine:
+
+git clone https://github.com/yourusername/palace-of-goods.git
+cd palace-of-goods
+
+2. Set Up Environment Variables
+
+You'll need to create a .env file inside the backend/ directory for configuration:
+
+Backend .env (inside backend/ directory):
+
+SECRET_KEY=mysecretkey
+JWT_SECRET_KEY=myjwtsecretkey
+DATABASE_URL=mongodb://localhost:27017/palace-of-goods
+FLASK_ENV=development
+PI_API_KEY=your_pi_api_key
+
+SECRET_KEY: Flask’s secret key for cryptographic operations.
+
+JWT_SECRET_KEY: Secret key for signing JWT tokens.
+
+DATABASE_URL: Connection string to your MongoDB instance.
+
+PI_API_KEY: Your Pi Network API key (get it from the Pi Network Developer Portal).
+
+
+3. Install Backend Dependencies
+
+Install the required Python packages:
+
+cd backend
+pip install -r requirements.txt
+
 
 ---
 
-### Security Considerations
+Running the Application
 
-- **Environment Variables**: Ensure sensitive data like `SECRET_KEY` and `JWT_SECRET_KEY` are stored in environment variables and not hardcoded into the application.
-- **Password Hashing**: Passwords are hashed using **Werkzeug** before being stored in the database.
-- **JWT**: Use JWT tokens to protect API routes that require authentication.
+Running Locally
+
+1. Run the Backend:
+
+
+
+cd backend
+flask run
+
+The backend will run at http://localhost:5000.
+
+Running with Docker
+
+1. Build and Run Docker Containers:
+
+
+
+docker-compose up --build
+
+This will build and run the backend and database using Docker Compose.
+
+2. Access the Application:
+
+
+
+Backend API: http://localhost:5000/api
+
+
 
 ---
+
+API Endpoints
+
+The backend provides a RESTful API for managing products, users, and transactions.
+
+User Authentication
+
+POST /api/register: Register a new user.
+
+Request body:
+
+{
+  "username": "example",
+  "password": "password"
+}
+
+
+POST /api/login: Login and get a JWT token.
+
+Request body:
+
+{
+  "username": "example",
+  "password": "password"
+}
+
+Response:
+
+{
+  "access_token": "jwt_token"
+}
+
+
+
+Products
+
+GET /api/products: Fetch all products.
+
+POST /api/products: Create a new product (JWT required).
+
+Request body:
+
+{
+  "name": "Product Name",
+  "description": "Product Description",
+  "price": 100.0
+}
+
+
+
+Pi Payments
+
+POST /api/pi/transaction: Initiate a Pi transaction.
+
+Request body:
+
+{
+  "amount": 50,
+  "recipient": "recipient_wallet_address"
+}
+
+
+
+
+---
+
+Using Pi Payments
+
+To use Pi Network payments, follow these steps:
+
+1. Pi Developer Account:
+
+Sign up and obtain your Pi API Key from the Pi Network Developer Portal.
+
+
+
+2. Configure .env:
+
+Add your Pi API Key to the .env file in the backend/ directory:
+
+PI_API_KEY=your_pi_api_key
+
+
+
+3. Integration: The backend is integrated with the Pi Network API to handle payments securely using Pi cryptocurrency.
+
+
+
+For more information on Pi Network payments, refer to the Pi Developer Documentation.
+
+
+---
+
+Security Considerations
+
+JWT Authentication: The backend uses JWT tokens to secure protected routes and authenticate users. Always keep your JWT_SECRET_KEY safe.
+
+Password Hashing: Passwords are securely hashed using a strong hashing algorithm before being stored in the database.
+
+Environment Variables: All sensitive data (like database URLs and API keys) is stored in .env files and never hardcoded into the application.
+
+HTTPS: In a production environment, ensure the app is running over HTTPS to protect user data and API communications.
+
+
+
+---
+
+License
+
+This project is licensed under the Pi Network trademark. See the LICENSE file for details.
+
+
+---
+
+Notes:
+
+If you prefer using MongoDB with Docker, ensure the database service is correctly set up in your docker-compose.yml file and the MongoDB container is running before starting the backend.
+
+For running in production, consider setting up reverse proxies (such as Nginx) and ensure the app runs over HTTPS.
+
+
+
+---
+
+This README.md file is structured to provide all necessary information for setting up and running the backend for the Palace of Goods marketplace.
+
