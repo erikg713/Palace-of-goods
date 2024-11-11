@@ -1,4 +1,4 @@
-Palace of Goods Documentation
+##Palace of Goods Documentation##
 
 Palace of Goods is an online Web3-powered marketplace built using Flask for the backend, React for the frontend, and Pi Network for cryptocurrency payments and user authentication. Users can browse, buy, sell, or trade a wide variety of items, from electronics to handmade crafts, with Pi Network integration ensuring secure, fast, and easy payments.
 
