@@ -1,4 +1,4 @@
-Palace of Goods Documentation
+**Palace of Goods Documentation**
 
 Palace of Goods is an online marketplace where users can browse, buy, sell, or trade a wide variety of items including electronics, clothing, furniture, and handmade crafts. The platform integrates Pi Network payments, ensuring transactions are quick, easy, and secure.
 
