@@ -1,188 +1,222 @@
-# Palace of Goods - Frontend
+Palace of Goods Frontend
 
-The **frontend** for Palace of Goods is built using **React** and integrates with the backend via **Axios** to provide a responsive, user-friendly marketplace experience. The frontend is designed as a **Progressive Web App (PWA)**, which means users can install it on their devices and access it offline.
+Palace of Goods is an online marketplace where users can browse, buy, sell, or trade a wide variety of items. The platform integrates Pi Network payments, ensuring transactions are quick, easy, and secure.
 
----
+Table of Contents
 
-## Table of Contents
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Prerequisites](#prerequisites)
-- [Installation](#installation)
-- [Running the Frontend](#running-the-frontend)
-- [Using Docker](#using-docker)
-- [Available Scripts](#available-scripts)
-- [PWA (Progressive Web App)](#pwa-progressive-web-app)
-- [Environment Variables](#environment-variables)
-- [Security Considerations](#security-considerations)
-- [License](#license)
+Features
 
----
+Tech Stack
 
-## Features
+Prerequisites
 
-- **User Authentication**: Integration with the backend to allow users to register, log in, and authenticate via JWT tokens.
-- **Product Listings**: Users can browse and view available products on the marketplace.
-- **Responsive Design**: The frontend is fully responsive and optimized for mobile, tablet, and desktop views.
-- **Pi Network Payments**: Allows users to make payments using Pi cryptocurrency through the Pi Network integration.
-- **Progressive Web App (PWA)**: Users can install the app on their devices and access it offline.
+Installation and Setup
+
+Running the Application
+
+Connecting to the Backend
+
+Environment Variables
+
+Building for Production
+
+License
+
+
 
 ---
 
-## Tech Stack
+Features
 
-- **React**: Frontend framework for building UI components.
-- **Axios**: HTTP client used for making requests to the backend API.
-- **Bootstrap**: For responsive, mobile-first UI components and layout.
-- **Service Workers**: Enable the app to work offline and improve performance.
-- **Pi Network**: Integrated Pi Network payments for secure transactions.
+Product Browsing: Users can browse, search, and filter products listed on the marketplace.
 
----
+User Authentication: Secure login and registration using JWT tokens.
 
-## Prerequisites
+Product Management: Add, edit, and delete products (for authenticated users).
 
-Make sure you have the following installed:
+Pi Payments: Integration with Pi Network for seamless cryptocurrency transactions.
 
-- **Node.js** (14+)
-- **npm** (Node package manager)
+Responsive Design: Optimized for mobile and desktop devices.
 
-Or, if using **Docker**:
-- [Docker](https://www.docker.com/get-started)
-- [Docker Compose](https://docs.docker.com/compose/install/)
+Progressive Web App (PWA): Palace of Goods is a PWA, which allows users to install the app on their devices and use it offline.
+
+
 
 ---
 
-## Installation
+Tech Stack
 
-### 1. Clone the Repository
-```bash
+Frontend Framework: React
+
+HTTP Client: Axios
+
+UI Components: Bootstrap
+
+PWA: Service Workers
+
+State Management: React Context (or Redux, if used)
+
+Styling: Custom CSS or Bootstrap
+
+Containerization: Docker (optional)
+
+
+
+---
+
+Prerequisites
+
+Before running the frontend, make sure you have the following installed:
+
+Node.js (14+)
+
+npm (or yarn)
+
+Backend API (make sure the backend is running locally or in a container, as the frontend will make API calls to it)
+
+Docker (optional, for containerization)
+
+
+
+---
+
+Installation and Setup
+
+1. Clone the Repository:
+
 git clone https://github.com/yourusername/palace-of-goods.git
-cd frontend
-```
+cd palace-of-goods/frontend
 
-### 2. Install Dependencies
-Install the required npm packages:
-```bash
+
+2. Install Dependencies: Install the required Node.js dependencies:
+
 npm install
-```
 
-### 3. Set Up Environment Variables
-Create a `.env` file in the **frontend** directory with the following content:
 
-```bash
+3. Set Up Environment Variables: Create a .env file inside the frontend/ directory for configuration:
+
+Frontend .env:
+
 REACT_APP_API_URL=http://localhost:5000
-```
 
-- **REACT_APP_API_URL**: This should point to your backend API URL. In development, it is likely `http://localhost:5000`.
+REACT_APP_API_URL: The base URL for the backend API (usually http://localhost:5000 for local development).
+
+
+
+
 
 ---
 
-## Running the Frontend
+Running the Application
 
-### 1. Running Locally
-To start the development server, run:
-```bash
+1. Run the Frontend Locally: Start the development server:
+
 npm start
-```
 
-This will start the frontend on `http://localhost:3000`. The app will automatically reload if you make changes to the source files.
+The frontend will run at http://localhost:3000.
 
----
 
-## Using Docker
+2. Run with Docker: If you are using Docker, you can containerize the frontend by following these steps:
 
-If you prefer to run the frontend using Docker, follow these steps:
+Dockerfile (if not already created):
 
-### 1. Build the Docker Image
-Navigate to the `frontend/` directory and run:
-```bash
-docker build -t palace-frontend .
-```
+# Use the official Node.js image as the base image
+FROM node:16
 
-### 2. Run the Docker Container
-After building the image, run the container:
-```bash
-docker run -d -p 3000:3000 --env-file .env palace-frontend
-```
+# Set the working directory in the container
+WORKDIR /app
 
-This will start the frontend on `http://localhost:3000`.
+# Copy the frontend code to the container
+COPY . .
 
----
+# Install dependencies
+RUN npm install
 
-## Available Scripts
+# Expose port 3000 for the application
+EXPOSE 3000
 
-In the **frontend** directory, you can run the following npm scripts:
+# Run the app
+CMD ["npm", "start"]
 
-### 1. `npm start`
-Runs the app in the development mode.
-- Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-- The page will automatically reload if you make edits.
+docker-compose.yml (if not already created):
 
-### 2. `npm run build`
-Builds the app for production to the `build` folder.
-- It correctly bundles React in production mode and optimizes the build for the best performance.
+version: '3.8'
 
-### 3. `npm run test`
-Runs the test suite for the React components.
+services:
+  frontend:
+    build: ./frontend
+    volumes:
+      - ./frontend:/app
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://backend:5000
+    depends_on:
+      - backend
 
----
+Build and run the Docker containers:
 
-## PWA (Progressive Web App)
+docker-compose up --build
 
-This frontend is designed as a **Progressive Web App (PWA)**, which means users can install it on their devices and access it offline.
+Access the application at http://localhost:3000.
 
-### Key PWA Features:
-1. **Service Worker**: Enables caching and offline capabilities. Service workers run in the background, ensuring the app loads even when there’s no internet connection.
-2. **Web App Manifest**: Defines how the app appears to users when installed on their device (e.g., name, icons, start URL).
 
-### Registering the Service Worker
 
-To register the service worker and enable PWA functionality, the app automatically registers the service worker during production builds.
-
-The registration happens in `serviceWorkerRegistration.js`:
-```javascript
-export function register() {
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/service-worker.js')
-        .then(registration => {
-          console.log('Service Worker registered with scope:', registration.scope);
-        })
-        .catch(error => {
-          console.error('Service Worker registration failed:', error);
-        });
-    });
-  }
-}
-```
 
 ---
 
-## Environment Variables
+Connecting to the Backend
 
-In the **frontend** directory, the `.env` file is used to store environment-specific variables.
+The frontend interacts with the backend API for user authentication, product management, and Pi payment processing. Make sure the backend is running and accessible. By default, the frontend expects the backend to be running at http://localhost:5000.
 
-### Example `.env` file:
-```bash
+If you are running the frontend in production, make sure the environment variable REACT_APP_API_URL points to the correct backend URL.
+
+
+---
+
+Environment Variables
+
+Create a .env file in the frontend/ directory and add the following configuration:
+
 REACT_APP_API_URL=http://localhost:5000
-```
 
-- **REACT_APP_API_URL**: The backend API URL that the frontend communicates with.
+REACT_APP_API_URL: The base URL for your backend API.
 
----
 
-## Security Considerations
+You can add more environment variables as needed, such as for authentication tokens or Pi Network integration.
 
-- **HTTPS**: Ensure that the app is deployed behind HTTPS in production to secure communication between the frontend and backend.
-- **Environment Variables**: Use environment variables for storing sensitive information such as the API URL. Do not hardcode these values in the codebase.
-- **CORS**: Ensure that your backend API allows **Cross-Origin Resource Sharing (CORS)** for secure communication between the frontend and backend.
 
 ---
 
-## License
+Building for Production
 
-This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
+To build the app for production, use the following command:
+
+npm run build
+
+This will generate an optimized production build in the build/ directory.
+
+You can then deploy the build/ directory to your web server or use Docker to containerize the production version of the frontend.
+
 
 ---
 
-This **README.md** file provides comprehensive instructions for setting up, running, and maintaining the **frontend** of the **Palace of Goods** project, including information about its PWA features. Feel free to customize it further based on your specific project needs. Let me know if you need more adjustments!
+License
+
+This project is licensed under the Pi Network trademark. See the LICENSE file for details.
+
+
+---
+
+Notes:
+
+If you are deploying to production, ensure you configure the backend to serve the production version of the frontend (either as static files or through a web server like Nginx).
+
+The Pi Network payments integration is handled by the backend, but the frontend is responsible for initiating payments and displaying transaction statuses to the user.
+
+
+
+---
+
+This README.md file provides all the information needed to set up, develop, and deploy the frontend for the Palace of Goods project.
+
