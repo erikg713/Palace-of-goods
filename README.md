@@ -1,5 +1,3 @@
----
-
 ### **Project README (`README.md`)**
 
 ```markdown
