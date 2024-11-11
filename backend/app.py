@@ -1,29 +1,62 @@
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_jwt_extended import JWTManager
-from flask_cors import CORS
-from config import Config
+import os
+import requests
+from flask import Flask, jsonify, request
+from flask_pymongo import PyMongo
+from bson import ObjectId
+from werkzeug.exceptions import BadRequest
 
 app = Flask(__name__)
-app.config.from_object(Config)
+app.config.from_pyfile('.env')
 
-# Initialize extensions
-db = SQLAlchemy(app)
-jwt = JWTManager(app)
+# Initialize MongoDB
+app.config['MONGO_URI'] = os.getenv('MONGO_URI')
+mongo = PyMongo(app)
 
-# CORS configuration: Allow specific origins in production
-CORS(app, resources={r"/*": {"origins": "*"}} if app.config["ENV"] == "development" else {"origins": ["https://your-production-domain.com"]})
+# Collection for storing transactions
+transactions = mongo.db.transactions
 
-# Register Blueprints
-from routes.auth import auth_bp
-from routes.products import product_bp
-app.register_blueprint(auth_bp, url_prefix="/auth")
-app.register_blueprint(product_bp, url_prefix="/")
+# Pi Network Payment Verification Route
+@app.route('/verify-payment', methods=['POST'])
+def verify_payment():
+    data = request.json
+    transaction_hash = data.get('transaction_hash')
+    
+    if not transaction_hash:
+        raise BadRequest("Transaction hash is required")
 
-# Initialize Database (development only; use migrations in production)
-if app.config["ENV"] == "development":
-    with app.app_context():
-        db.create_all()
+    # Pi Network API to fetch transaction details
+    api_url = f"https://api.testnet.minepi.com/transactions/{transaction_hash}"
+    headers = {
+        "Authorization": f"Bearer {os.getenv('PI_API_KEY')}"
+    }
 
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    try:
+        response = requests.get(api_url, headers=headers)
+        response.raise_for_status()  # Raise an error for bad responses
+        transaction_data = response.json()
+
+        if transaction_data.get('transaction_successful'):
+            # Save transaction details in MongoDB
+            transaction = {
+                "transaction_hash": transaction_data['transaction_hash'],
+                "source_account": transaction_data['source_account'],
+                "recipient_address": transaction_data['to'],
+                "amount": float(transaction_data['amount']),
+                "status": "successful",
+            }
+
+            result = transactions.insert_one(transaction)
+
+            return jsonify({
+                "message": "Payment verified successfully",
+                "transaction_id": str(result.inserted_id)
+            }), 200
+        else:
+            return jsonify({"error": "Payment not successful"}), 400
+
+    except requests.exceptions.RequestException as e:
+        return jsonify({"error": str(e)}), 500
+
+# Run the Flask app
+if __name__ == '__main__':
+    app.run(debug=True)
