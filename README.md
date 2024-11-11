@@ -1,4 +1,4 @@
-## Palace of Goods Documentation
+Palace of Goods Documentation
 
 Palace of Goods is an online Web3-powered marketplace built using Flask for the backend, React for the frontend, and Pi Network for cryptocurrency payments and user authentication. Users can browse, buy, sell, or trade a wide variety of items, from electronics to handmade crafts, with Pi Network integration ensuring secure, fast, and easy payments.
 
@@ -33,7 +33,6 @@ Table of Contents
 
 
 
----
 
 Features
 
@@ -53,7 +52,6 @@ Product Reviews and Ratings: Users can rate and review products to enhance the c
 
 
 
----
 
 Tech Stack
 
@@ -69,7 +67,6 @@ Containerization: Docker, Docker Compose
 
 
 
----
 
 Prerequisites
 
@@ -87,7 +84,6 @@ Pi Network Developer Account (for Pi Payments)
 
 
 
----
 
 Installation and Setup
 
@@ -127,7 +123,6 @@ cd frontend
 npm install
 
 
----
 
 Running the Application
 
@@ -210,7 +205,6 @@ services:
 docker-compose up --build
 
 
----
 
 API Endpoints
 
@@ -236,7 +230,6 @@ POST /api/pi/transaction: Initiate a Pi transaction.
 
 
 
----
 
 Using Pi Payments
 
@@ -274,7 +267,6 @@ const ProductDetail: React.FC = () => {
 export default ProductDetail;
 
 
----
 
 Security Considerations
 
@@ -288,7 +280,6 @@ HTTPS: Ensure that the app is running behind HTTPS in production to secure commu
 
 
 
----
 
 License
 
