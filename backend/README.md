@@ -24,4 +24,31 @@
 - POST /auth/login - Login with username and password
 - GET /products - Get all products
 - GET /products/<id> - Get product details by ID
-- POST /products -
+## API Endpoints (continued)
+
+- `POST /auth/register` - Register a new user
+  - Request body: `{ "username": "username", "password": "password" }`
+  - Response: `{ "message": "User registered" }`
+
+- `POST /auth/login` - Login with username and password
+  - Request body: `{ "username": "username", "password": "password" }`
+  - Response: `{ "access_token": "jwt_token" }`
+
+- `GET /products` - Get a list of all products
+  - Response: 
+    ```json
+    [
+      { "id": 1, "name": "Product1", "description": "Description", "price": 100.0 },
+      { "id": 2, "name": "Product2", "description": "Description", "price": 150.0 }
+    ]
+    ```
+
+- `GET /products/<id>` - Get product details by ID
+  - Response: 
+    ```json
+    { "id": 1, "name": "Product1", "description": "Description", "price": 100.0 }
+    ```
+
+- `POST /products` - Add a new product
+  - Request body: `{ "name": "Product name", "description": "Description", "price": 100.0 }`
+  - Response: `{ "message": "Product added successfully" }`
