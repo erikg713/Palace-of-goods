@@ -3,26 +3,28 @@ import logging
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
-from mongoengine import connect
+from flask_cors import CORS
 from blueprints.auth import auth_bp
 from blueprints.marketplace import marketplace_bp
+from config import Config
+from mongoengine import connect
 
 # Initialize Flask app
 app = Flask(__name__)
 
-# Configure Flask app with environment variables or defaults
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'default_secret_key')
-app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', 'default_jwt_secret_key')
-app.config['FLASK_ENV'] = os.getenv('FLASK_ENV', 'development')
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI', 'sqlite:///default.db')
+# Load the configuration from config.py
+app.config.from_object(Config)
 
-# Initialize SQLAlchemy
+# Enable CORS (Cross-Origin Resource Sharing)
+CORS(app)
+
+# Initialize SQLAlchemy (for relational database)
 db = SQLAlchemy(app)
 logging.debug("Connected to SQLAlchemy database successfully.")
 
 # Connect to MongoDB (for MongoEngine)
 try:
-    connect(host=os.getenv('DATABASE_URL', 'mongodb://localhost:27017/palace_of_goods'))
+    connect(host=app.config['MONGO_URI'])
     logging.debug("Connected to MongoDB successfully.")
 except Exception as e:
     logging.error(f"Error connecting to MongoDB: {e}")
@@ -38,7 +40,7 @@ from models.user import User
 def load_user(user_id):
     return User.objects.get(id=user_id)  # Adjust this if needed for SQLAlchemy
 
-# Register blueprints
+# Register blueprints for modular app structure
 app.register_blueprint(auth_bp, url_prefix='/auth')
 app.register_blueprint(marketplace_bp, url_prefix='/marketplace')
 
@@ -51,4 +53,4 @@ for rule in app.url_map.iter_rules():
 
 # Run the app
 if __name__ == '__main__':
-    app.run(debug=app.config['FLASK_ENV'] == 'development')
+    app.run(debug=app.config['DEBUG'])
