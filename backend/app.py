@@ -1,26 +1,37 @@
 import os
 import requests
+import logging
 from flask import Flask, jsonify, request
 from flask_pymongo import PyMongo
+from flask_sqlalchemy import SQLAlchemy
 from bson import ObjectId
 from werkzeug.exceptions import BadRequest
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 app = Flask(__name__)
-app.config.from_pyfile('.env')
 
-# Initialize MongoDB
+# Configure MongoDB
 app.config['MONGO_URI'] = os.getenv('MONGO_URI')
-mongo = PyMongo(app)
+if not app.config['MONGO_URI']:
+    raise ValueError("MONGO_URI is not set. Please set it in your .env file.")
 
-# Collection for storing transactions
-transactions = mongo.db.transactions
+mongo = PyMongo(app)
+transactions = mongo.db.transactions  # Collection for storing transactions
+
+# Configure SQLAlchemy (if needed)
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI', 'sqlite:///default.db')
+db = SQLAlchemy(app)
+logging.debug("Connected to SQLAlchemy database successfully.")
 
 # Pi Network Payment Verification Route
 @app.route('/verify-payment', methods=['POST'])
 def verify_payment():
     data = request.json
     transaction_hash = data.get('transaction_hash')
-    
+
     if not transaction_hash:
         raise BadRequest("Transaction hash is required")
 
@@ -29,6 +40,9 @@ def verify_payment():
     headers = {
         "Authorization": f"Bearer {os.getenv('PI_API_KEY')}"
     }
+
+    if not headers["Authorization"]:
+        raise ValueError("PI_API_KEY is not set. Please set it in your .env file.")
 
     try:
         response = requests.get(api_url, headers=headers)
