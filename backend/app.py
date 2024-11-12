@@ -1,76 +1,54 @@
 import os
-import requests
 import logging
-from flask import Flask, jsonify, request
-from flask_pymongo import PyMongo
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from bson import ObjectId
-from werkzeug.exceptions import BadRequest
-from dotenv import load_dotenv
+from flask_login import LoginManager
+from mongoengine import connect
+from blueprints.auth import auth_bp
+from blueprints.marketplace import marketplace_bp
 
-# Load environment variables
-load_dotenv()
-
+# Initialize Flask app
 app = Flask(__name__)
 
-# Configure MongoDB
-app.config['MONGO_URI'] = os.getenv('MONGO_URI')
-if not app.config['MONGO_URI']:
-    raise ValueError("MONGO_URI is not set. Please set it in your .env file.")
-
-mongo = PyMongo(app)
-transactions = mongo.db.transactions  # Collection for storing transactions
-
-# Configure SQLAlchemy (if needed)
+# Configure Flask app with environment variables or defaults
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'default_secret_key')
+app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', 'default_jwt_secret_key')
+app.config['FLASK_ENV'] = os.getenv('FLASK_ENV', 'development')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI', 'sqlite:///default.db')
+
+# Initialize SQLAlchemy
 db = SQLAlchemy(app)
 logging.debug("Connected to SQLAlchemy database successfully.")
 
-# Pi Network Payment Verification Route
-@app.route('/verify-payment', methods=['POST'])
-def verify_payment():
-    data = request.json
-    transaction_hash = data.get('transaction_hash')
+# Connect to MongoDB (for MongoEngine)
+try:
+    connect(host=os.getenv('DATABASE_URL', 'mongodb://localhost:27017/palace_of_goods'))
+    logging.debug("Connected to MongoDB successfully.")
+except Exception as e:
+    logging.error(f"Error connecting to MongoDB: {e}")
 
-    if not transaction_hash:
-        raise BadRequest("Transaction hash is required")
+# Set up Flask-Login
+login_manager = LoginManager(app)
+login_manager.login_view = 'auth.login'
 
-    # Pi Network API to fetch transaction details
-    api_url = f"https://api.testnet.minepi.com/transactions/{transaction_hash}"
-    headers = {
-        "Authorization": f"Bearer {os.getenv('PI_API_KEY')}"
-    }
+# Import and configure the user loader for Flask-Login
+from models.user import User
 
-    if not headers["Authorization"]:
-        raise ValueError("PI_API_KEY is not set. Please set it in your .env file.")
+@login_manager.user_loader
+def load_user(user_id):
+    return User.objects.get(id=user_id)  # Adjust this if needed for SQLAlchemy
 
-    try:
-        response = requests.get(api_url, headers=headers)
-        response.raise_for_status()  # Raise an error for bad responses
-        transaction_data = response.json()
+# Register blueprints
+app.register_blueprint(auth_bp, url_prefix='/auth')
+app.register_blueprint(marketplace_bp, url_prefix='/marketplace')
 
-        if transaction_data.get('transaction_successful'):
-            # Save transaction details in MongoDB
-            transaction = {
-                "transaction_hash": transaction_data['transaction_hash'],
-                "source_account": transaction_data['source_account'],
-                "recipient_address": transaction_data['to'],
-                "amount": float(transaction_data['amount']),
-                "status": "successful",
-            }
+# Logging setup
+logging.basicConfig(level=logging.DEBUG)
 
-            result = transactions.insert_one(transaction)
+# List all registered routes for debugging purposes
+for rule in app.url_map.iter_rules():
+    logging.debug(f"Endpoint: {rule.endpoint}, URL: {rule}")
 
-            return jsonify({
-                "message": "Payment verified successfully",
-                "transaction_id": str(result.inserted_id)
-            }), 200
-        else:
-            return jsonify({"error": "Payment not successful"}), 400
-
-    except requests.exceptions.RequestException as e:
-        return jsonify({"error": str(e)}), 500
-
-# Run the Flask app
+# Run the app
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=app.config['FLASK_ENV'] == 'development')
