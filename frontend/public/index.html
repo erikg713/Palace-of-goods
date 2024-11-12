@@ -3,11 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Palace of Goods</title>
-  <script src="https://sdk.minepi.com/pi-sdk.js" async></script> <!-- Pi Network SDK -->
+  <title>Palace of Goods Marketplace</title>
+  
+  <!-- Link to the manifest.json -->
+  <link rel="manifest" href="/manifest.json" />
+  
+  <!-- Pi Network SDK -->
+  <script src="https://sdk.minepi.com/pi-sdk.js" async></script>
 </head>
 <body>
-  <div id="root"></div>
+  <div id="root"></div> <!-- React app will be rendered here -->
+
+  <!-- Additional React app scripts -->
+  <script src="/static/js/bundle.js" defer></script>
+  <script src="/static/js/main.chunk.js" defer></script>
 
   <script>
     // Initialize Pi SDK on document load
