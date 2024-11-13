@@ -106,3 +106,25 @@ router.post('/complete-payment', [
 }));
 
 export default router;
+class PaymentProcessor:
+    def __init__(self, payment_service):
+        self.payment_service = payment_service
+
+    def process_payment(self, amount, currency):
+        # Logic to process payment with a specific payment service
+        try:
+            transaction = self.payment_service.charge(amount, currency)
+            print("Payment successful:", transaction)
+        except Exception as e:
+            print("Payment failed:", e)
+
+# order.py
+class OrderManager:
+    def __init__(self, payment_processor):
+        self.payment_processor = payment_processor
+
+    def create_order(self, user, items, currency="USD"):
+        # Logic to create an order, sum item prices, and process payment
+        total_amount = sum(item['price'] for item in items)
+        self.payment_processor.process_payment(total_amount, currency)
+        print(f"Order created for user {user} with total: {total_amount} {currency}")
