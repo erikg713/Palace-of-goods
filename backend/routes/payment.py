@@ -128,3 +128,30 @@ class OrderManager:
         total_amount = sum(item['price'] for item in items)
         self.payment_processor.process_payment(total_amount, currency)
         print(f"Order created for user {user} with total: {total_amount} {currency}")
+# payment.py (continued)
+class PaymentProcessor:
+    # ... (existing code)
+
+    def process_payment(self, amount, currency):
+        try:
+            transaction = self.payment_service.charge(amount, currency)
+            print("Payment successful:", transaction)
+        except Exception as e:
+            print(f"Payment failed: {e}")
+            # Log or retry as necessary
+            raise
+
+# order.py (continued)
+class OrderManager:
+    # ... (existing code)
+
+    def create_order(self, user, items, currency="USD"):
+        try:
+            validate_items(items)
+            total_amount = sum(item['price'] for item in items)
+            self.payment_processor.process_payment(total_amount, currency)
+            print(f"Order created for user {user} with total: {total_amount} {currency}")
+        except ValueError as ve:
+            print("Invalid items:", ve)
+        except Exception as e:
+            print("Failed to create order:", e)
