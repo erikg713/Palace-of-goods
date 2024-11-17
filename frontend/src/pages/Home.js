@@ -1,4 +1,37 @@
-import React from 'react';
+// src/pages/HomePage.js
+import React, { useEffect, useState } from 'react';
+import { fetchProducts } from '../services/api';
+import ProductCard from '../components/ProductCard';
+
+const HomePage = () => {
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const productList = await fetchProducts();
+        setProducts(productList);
+      } catch (error) {
+        console.error('Error loading products:', error);
+      }
+    };
+
+    loadProducts();
+  }, []);
+
+  return (
+    <div className="home-page">
+      <h1>Marketplace</h1>
+      <div className="product-list">
+        {products.map((product) => (
+          <ProductCard key={product.id} product={product} />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default HomePage;import React from 'react';
 import useWeb3 from '../hooks/useWeb3';
 import { toast } from 'react-toastify';
 
