@@ -29,3 +29,17 @@ const App = () => (
 );
 
 export default App;
+// frontend/src/App.js
+import React from 'react';
+import PaymentForm from './components/PaymentForm';
+
+function App() {
+  return (
+    <div>
+      <h1>Palace of Goods - Payment Portal</h1>
+      <PaymentForm />
+    </div>
+  );
+}
+
+export default App;
