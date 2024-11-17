@@ -1,3 +1,5 @@
+await db.updatePaymentStatus(paymentId, 'submitted');
+global.updatePaymentStatus(paymentId, 'submitted');
 import { Server } from 'socket.io';
 
 const server = app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
