@@ -160,3 +160,76 @@ exports.createPayment = async (req, res) => {
     res.status(500).json({ error: 'Failed to store payment data' });
   }
 };
+const PiNetwork = require('pi-backend');
+const dotenv = require('dotenv');
+dotenv.config();
+const { db } = require('../config/db'); // Import DB functions (adjust as needed)
+const Payment = require('../models/payment'); // Your Payment model
+
+const apiKey = process.env.PI_API_KEY;
+const walletPrivateSeed = process.env.WALLET_PRIVATE_SEED;
+const pi = new PiNetwork(apiKey, walletPrivateSeed);
+
+// Create a Payment
+exports.createPayment = async (req, res) => {
+  const { userUid, amount, memo, productId } = req.body;
+  const paymentData = {
+    amount,
+    memo,
+    metadata: { productId, userUid },
+    uid: userUid
+  };
+
+  try {
+    const paymentId = await pi.createPayment(paymentData);
+
+    // Store payment in the database
+    const newPayment = new Payment({
+      uid: userUid,
+      productId,
+      amount,
+      memo,
+      paymentId,
+      txid: null,
+      status: 'created'
+    });
+    await newPayment.save();
+
+    res.json({ paymentId });
+  } catch (error) {
+    console.error('Payment creation failed:', error.message);
+    res.status(500).json({ error: 'Payment creation failed' });
+  }
+};
+
+// Submit Payment
+exports.submitPayment = async (req, res) => {
+  const { paymentId } = req.body;
+
+  try {
+    const txid = await pi.submitPayment(paymentId);
+    
+    // Update payment with transaction ID
+    await Payment.updateOne({ paymentId }, { txid, status: 'submitted' });
+    res.json({ txid });
+  } catch (error) {
+    console.error('Payment submission failed:', error.message);
+    res.status(500).json({ error: 'Payment submission failed' });
+  }
+};
+
+// Complete Payment
+exports.completePayment = async (req, res) => {
+  const { paymentId, txid } = req.body;
+
+  try {
+    const completedPayment = await pi.completePayment(paymentId, txid);
+    
+    // Update payment status to completed in DB
+    await Payment.updateOne({ paymentId }, { status: 'completed' });
+    res.json({ completedPayment });
+  } catch (error) {
+    console.error('Payment completion failed:', error.message);
+    res.status(500).json({ error: 'Payment completion failed' });
+  }
+};
