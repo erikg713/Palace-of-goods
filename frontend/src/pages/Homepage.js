@@ -26,3 +26,23 @@ const Home = () => {
 };
 
 export default Home;
+
+// frontend/src/pages/HomePage.js
+import React from 'react';
+import ProductList from '../components/ProductList';
+
+const mockProducts = [
+  { id: '1', name: 'Product A', price: 10 },
+  { id: '2', name: 'Product B', price: 20 },
+];
+
+const HomePage = () => {
+  return (
+    <div>
+      <h1>Welcome to Palace of Goods</h1>
+      <ProductList products={mockProducts} />
+    </div>
+  );
+};
+
+export default HomePage;
