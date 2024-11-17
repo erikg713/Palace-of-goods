@@ -52,7 +52,6 @@ project-root/
 │   │   └── index.js
 ├── README.md
 └── package.json
-```
 
 ## API Endpoints
 
@@ -60,8 +59,6 @@ project-root/
 - POST /auth/login - Login with username and password
 - GET /products - Get all products
 - GET /products/<id> - Get product details by ID
-## API Endpoints (continued)
-
 - `POST /auth/register` - Register a new user
   - Request body: `{ "username": "username", "password": "password" }`
   - Response: `{ "message": "User registered" }`
