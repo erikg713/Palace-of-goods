@@ -63,3 +63,22 @@ function App() {
 }
 
 export default App;
+import React from 'react';
+import { BrowserRouter as Router } from 'react-router-dom';
+import RoutesList from './routes';
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+import { ToastContainer } from 'react-toastify';
+
+const App = () => (
+  <Router>
+    <Navbar />
+    <div className="container mt-4">
+      <RoutesList />
+    </div>
+    <Footer />
+    <ToastContainer />
+  </Router>
+);
+
+export default App;
