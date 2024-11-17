@@ -1,1 +1,124 @@
+/* Checkout Styles for Palace of Goods */
 
+.checkout-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 30px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+}
+
+.checkout-header {
+  text-align: center;
+  font-size: 2em;
+  font-weight: bold;
+  color: #2c3e50;
+  margin-bottom: 30px;
+}
+
+.checkout-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.checkout-form .input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.checkout-form label {
+  font-size: 1.1em;
+  color: #2c3e50;
+}
+
+.checkout-form input,
+.checkout-form select,
+.checkout-form textarea {
+  padding: 10px;
+  font-size: 1em;
+  border-radius: 5px;
+  border: 1px solid #bdc3c7;
+  background-color: #fff;
+}
+
+.checkout-form input:focus,
+.checkout-form select:focus,
+.checkout-form textarea:focus {
+  outline: none;
+  border-color: #3498db;
+}
+
+.checkout-form .payment-methods {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.checkout-form .payment-method {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.checkout-form .payment-method input[type="radio"] {
+  accent-color: #3498db;
+}
+
+.checkout-summary {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.checkout-summary h3 {
+  font-size: 1.5em;
+  color: #2c3e50;
+  margin-bottom: 20px;
+}
+
+.checkout-summary .summary-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.1em;
+  margin-bottom: 10px;
+}
+
+.checkout-summary .summary-item .label {
+  color: #7f8c8d;
+}
+
+.checkout-summary .summary-item .value {
+  color: #2c3e50;
+}
+
+.checkout-summary .total-price {
+  font-size: 1.4em;
+  font-weight: bold;
+  color: #e74c3c;
+  margin-top: 20px;
+}
+
+.checkout-button {
+  background-color: #3498db;
+  color: #fff;
+  padding: 15px 30px;
+  font-size: 1.2em;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 100%;
+}
+
+.checkout-button:hover {
+  background-color: #2980b9;
+}
+
+.checkout-button:disabled {
+  background-color: #bdc3c7;
+  cursor: not-allowed;
+}
