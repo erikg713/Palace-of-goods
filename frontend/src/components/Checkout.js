@@ -102,3 +102,96 @@ const Checkout = () => {
 };
 
 export default Checkout;
+       import React, { useState } from 'react';
+import axios from 'axios';
+
+const Checkout = () => {
+  const [userUid, setUserUid] = useState('');
+  const [amount, setAmount] = useState(0);
+  const [memo, setMemo] = useState('');
+  const [productId, setProductId] = useState('');
+  const [paymentId, setPaymentId] = useState(null);
+  const [txid, setTxid] = useState('');
+  const [status, setStatus] = useState('');
+
+  // Create Payment
+  const createPayment = async () => {
+    try {
+      const response = await axios.post('/api/payment/create-payment', {
+        userUid,
+        amount,
+        memo,
+        productId
+      });
+      setPaymentId(response.data.paymentId);
+      alert('Payment created! Proceed to submit.');
+    } catch (error) {
+      console.error('Error creating payment:', error);
+      alert('Payment creation failed.');
+    }
+  };
+
+  // Submit Payment
+  const submitPayment = async () => {
+    try {
+      const response = await axios.post('/api/payment/submit-payment', { paymentId });
+      setTxid(response.data.txid);
+      alert('Payment submitted! Proceed to complete.');
+    } catch (error) {
+      console.error('Error submitting payment:', error);
+      alert('Payment submission failed.');
+    }
+  };
+
+  // Complete Payment
+  const completePayment = async () => {
+    try {
+      const response = await axios.post('/api/payment/complete-payment', {
+        paymentId,
+        txid
+      });
+      setStatus(response.data.completedPayment.status);
+      alert('Payment completed!');
+    } catch (error) {
+      console.error('Error completing payment:', error);
+      alert('Payment completion failed.');
+    }
+  };
+
+  return (
+    <div>
+      <input
+        type="text"
+        placeholder="User UID"
+        value={userUid}
+        onChange={(e) => setUserUid(e.target.value)}
+      />
+      <input
+        type="number"
+        placeholder="Amount"
+        value={amount}
+        onChange={(e) => setAmount(Number(e.target.value))}
+      />
+      <input
+        type="text"
+        placeholder="Memo"
+        value={memo}
+        onChange={(e) => setMemo(e.target.value)}
+      />
+      <input
+        type="text"
+        placeholder="Product ID"
+        value={productId}
+        onChange={(e) => setProductId(e.target.value)}
+      />
+
+      <button onClick={createPayment}>Create Payment</button>
+      {paymentId && <button onClick={submitPayment}>Submit Payment</button>}
+      {txid && <button onClick={completePayment}>Complete Payment</button>}
+
+      {status && <p>Payment Status: {status}</p>}
+    </div>
+  );
+};
+
+export default Checkout;
