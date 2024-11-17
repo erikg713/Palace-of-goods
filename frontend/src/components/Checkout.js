@@ -1,4 +1,167 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from "react";
+import './Checkout.css';
+
+const Checkout = () => {
+  const [cartItems, setCartItems] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    address: "",
+    city: "",
+    zip: "",
+    paymentMethod: "creditCard",
+  });
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  // Load cart items and calculate total price from local storage or API
+  useEffect(() => {
+    const savedCart = JSON.parse(localStorage.getItem('cart')) || [];
+    setCartItems(savedCart);
+    calculateTotalPrice(savedCart);
+  }, []);
+
+  // Function to calculate total price
+  const calculateTotalPrice = (items) => {
+    const total = items.reduce((acc, item) => acc + item.price * item.quantity, 0);
+    setTotalPrice(total);
+  };
+
+  // Handle form field changes
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  // Handle form submission
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setIsProcessing(true);
+
+    // Simulate payment processing
+    setTimeout(() => {
+      setIsProcessing(false);
+      alert("Order processed successfully!");
+      // Clear cart after order submission
+      localStorage.removeItem('cart');
+      setCartItems([]);
+    }, 2000);
+  };
+
+  return (
+    <div className="checkout-container">
+      <h2>Checkout</h2>
+      <div className="checkout-summary">
+        <h3>Order Summary</h3>
+        {cartItems.length === 0 ? (
+          <p>Your cart is empty. Please add items to proceed.</p>
+        ) : (
+          <div>
+            <div className="checkout-items">
+              {cartItems.map((item) => (
+                <div key={item.id} className="checkout-item">
+                  <img src={item.image} alt={item.name} className="checkout-item-image" />
+                  <div className="checkout-item-details">
+                    <h4>{item.name}</h4>
+                    <p>${item.price} x {item.quantity}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="total-price">
+              <span>Total: </span>
+              <span>${totalPrice.toFixed(2)}</span>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <form onSubmit={handleSubmit} className="checkout-form">
+        <h3>Billing Information</h3>
+        <label>
+          Name:
+          <input
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleInputChange}
+            required
+          />
+        </label>
+        <label>
+          Email:
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleInputChange}
+            required
+          />
+        </label>
+        <label>
+          Address:
+          <input
+            type="text"
+            name="address"
+            value={formData.address}
+            onChange={handleInputChange}
+            required
+          />
+        </label>
+        <label>
+          City:
+          <input
+            type="text"
+            name="city"
+            value={formData.city}
+            onChange={handleInputChange}
+            required
+          />
+        </label>
+        <label>
+          ZIP Code:
+          <input
+            type="text"
+            name="zip"
+            value={formData.zip}
+            onChange={handleInputChange}
+            required
+          />
+        </label>
+
+        <div className="payment-method">
+          <h3>Payment Method</h3>
+          <label>
+            <input
+              type="radio"
+              name="paymentMethod"
+              value="creditCard"
+              checked={formData.paymentMethod === "creditCard"}
+              onChange={handleInputChange}
+            />
+            Credit Card
+          </label>
+          <label>
+            <input
+              type="radio"
+              name="paymentMethod"
+              value="paypal"
+              checked={formData.paymentMethod === "paypal"}
+              onChange={handleInputChange}
+            />
+            PayPal
+          </label>
+        </div>
+
+        <button type="submit" className="checkout-button" disabled={isProcessing}>
+          {isProcessing ? "Processing..." : "Complete Order"}
+        </button>
+      </form>
+    </div>
+  );
+};
+
+export default Checkout;import React, { useState } from 'react';
 import axios from 'axios';
 
 const Checkout = () => {
