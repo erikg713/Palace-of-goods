@@ -1,6 +1,7 @@
 Step 1: Set Up Pi Network SDK in Backend
 
 1. Install Pi Network SDK:
+npm install pi-backend
 
 
 
