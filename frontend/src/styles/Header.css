@@ -1,0 +1,57 @@
+/* Header Styles for Palace of Goods */
+
+header {
+  background-color: #2c3e50; /* Dark blue background */
+  color: #ecf0f1; /* Light text color */
+  padding: 20px 0;
+  text-align: center;
+  font-family: 'Arial', sans-serif;
+}
+
+header .logo {
+  font-size: 2em;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #ecf0f1;
+  margin-bottom: 10px;
+}
+
+header .nav {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+}
+
+header .nav a {
+  color: #ecf0f1;
+  font-size: 1.1em;
+  text-decoration: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+header .nav a:hover {
+  background-color: #34495e; /* Darker shade on hover */
+}
+
+header .search-bar {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 10px;
+  border-radius: 25px;
+  background-color: #34495e;
+}
+
+header .search-bar input {
+  padding: 5px;
+  border: none;
+  border-radius: 20px;
+  font-size: 1em;
+  width: 200px;
+}
+
+header .search-bar input:focus {
+  outline

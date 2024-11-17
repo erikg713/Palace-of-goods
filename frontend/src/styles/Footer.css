@@ -1,0 +1,94 @@
+/* Footer Styles for Palace of Goods */
+
+footer {
+  background-color: #2c3e50; /* Dark background for footer */
+  color: #ecf0f1; /* Light text color */
+  padding: 40px 0;
+  text-align: center;
+  font-family: 'Arial', sans-serif;
+}
+
+footer .footer-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+footer .footer-left,
+footer .footer-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+footer .footer-left {
+  text-align: left;
+}
+
+footer .footer-logo {
+  font-size: 1.5em;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #ecf0f1;
+  margin-bottom: 15px;
+}
+
+footer .footer-nav {
+  display: flex;
+  gap: 20px;
+}
+
+footer .footer-nav a {
+  color: #ecf0f1;
+  font-size: 1.1em;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+footer .footer-nav a:hover {
+  color: #3498db; /* Hover color */
+}
+
+footer .footer-right {
+  text-align: right;
+}
+
+footer .social-links {
+  display: flex;
+  gap: 15px;
+}
+
+footer .social-links a {
+  color: #ecf0f1;
+  font-size: 1.5em;
+  transition: color 0.3s ease;
+}
+
+footer .social-links a:hover {
+  color: #3498db; /* Hover color */
+}
+
+footer .footer-bottom {
+  font-size: 0.9em;
+  color: #95a5a6;
+  margin-top: 30px;
+}
+
+footer .footer-bottom span {
+  color: #ecf0f1;
+}
+
+footer .footer-bottom a {
+  color: #3498db;
+  text-decoration: none;
+}
+
+footer .footer-bottom a:hover {
+  color: #ecf0f1; /* Hover color */
+}
