@@ -1,14 +1,14 @@
+# Backend Dockerfile
 FROM python:3.9-slim
 
 WORKDIR /app
 
-COPY . /app
+COPY . .
 
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install -r requirements.txt
 
-EXPOSE 5000
+# Set environment variable for Flask environment
+ARG FLASK_ENV
+ENV FLASK_ENV=$FLASK_ENV
 
-ENV FLASK_APP=app.py
-
-CMD ["gunicorn", "-b", "0.0.0.0:5000", "app:create_app()"]
-
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app:app"]

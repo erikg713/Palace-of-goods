@@ -1,0 +1,63 @@
+name: CodeQL Analysis
+
+# Trigger the workflow on push to main, on pull requests to main, and only for specific file types
+on:
+  push:
+    branches: 
+      - "main"
+    paths:
+      - '**.js'
+      - '**.ts'
+      - '**.py'
+      - '**.java'
+      - '**.c'
+      - '**.cpp'
+      - '**.rb'
+  pull_request:
+    branches: 
+      - "main"
+
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - language: javascript-typescript
+          - language: python
+          - language: java
+          - language: c-cpp
+          - language: ruby
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up CodeQL
+      uses: github/codeql-action/init@v3
+      with:
+        languages: ${{ matrix.language }}
+        # Enable incremental analysis for faster results
+        db-location: /github/home/codeql-databases
+
+    - name: Run CodeQL analysis
+      uses: github/codeql-action/analyze@v3
+      with:
+        category: "/language:${{ matrix.language }}"
+
+    - name: Upload CodeQL database (for debugging purposes)
+      if: failure()
+      uses: actions/upload-artifact@v3
+      with:
+        name: codeql-database-${{ matrix.language }}
+        path: /github/home/codeql-databases
+
+    - name: Notify on Failure
+      if: failure()
+      run: |
+        echo "CodeQL analysis failed for ${{ matrix.language }}."
