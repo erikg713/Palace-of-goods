@@ -79,3 +79,99 @@ h1, h2 {
 .checkout button:hover {
   background-color: #45a049;
 }
+/* App.css */
+
+/* Body */
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f8f9fa;
+  color: #333;
+}
+
+/* Container padding */
+.container {
+  padding: 20px;
+}
+
+/* Header Styling */
+h1 {
+  color: #007bff;
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+/* Button Styles */
+.btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+  border-color: #004085;
+}
+
+.navbar {
+  background-color: #343a40;
+}
+
+.navbar .navbar-brand, .navbar-nav .nav-link {
+  color: white !important;
+}
+
+.navbar .navbar-brand:hover, .navbar-nav .nav-link:hover {
+  color: #007bff !important;
+}
+
+footer {
+  background-color: #343a40;
+  color: white;
+  padding: 15px;
+  text-align: center;
+}
+
+footer p {
+  margin: 0;
+}
+
+/* Card style for marketplace */
+.card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card img {
+  border-radius: 8px;
+}
+
+.card-body {
+  padding: 15px;
+}
+
+.card-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.card-text {
+  font-size: 1rem;
+  color: #666;
+}
+
+.card-footer {
+  background-color: #f1f1f1;
+  text-align: center;
+}
+
+/* Form Styles */
+form .form-control {
+  border-radius: 5px;
+  border: 1px solid #ced4da;
+}
+
+form .form-control:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.25);
+}
