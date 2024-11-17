@@ -1,24 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import { fetchProducts } from '../services/api';
+// frontend/src/components/ProductList.js
+import React from 'react';
 
-function ProductList() {
-    const [products, setProducts] = useState([]);
+const ProductList = ({ products }) => {
+  return (
+    <div>
+      <h2>Available Products</h2>
+      <ul>
+        {products.map((product) => (
+          <li key={product.id}>
+            {product.name} - ${product.price}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
 
-    useEffect(() => {
-        const loadProducts = async () => {
-            const response = await fetchProducts();
-            setProducts(response.data);
-        };
-        loadProducts();
-    }, []);
-
-    return (
-        <div>
-            <h2>Products</h2>
-            <ul>
-                {products.map((product) => (
-                    <li key={product.id}>
-                        {product.name} - ${product.price}
-                    </li>
-                ))}
-            </ul
+export default ProductList;

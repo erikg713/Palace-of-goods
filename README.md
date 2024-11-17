@@ -1,152 +1,205 @@
-**Palace of Goods Documentation**
+# Palace of Goods
 
-Palace of Goods is an online marketplace where users can browse, buy, sell, or trade a wide variety of items including electronics, clothing, furniture, and handmade crafts. The platform integrates Pi Network payments, ensuring transactions are quick, easy, and secure.
+Palace of Goods is a decentralized marketplace application built on the Pi Network, designed for secure, seamless, and transparent transactions. The platform enables users to list, buy, and sell goods while earning rewards in a blockchain-powered ecosystem. A 10% transaction fee is applied to every sale, ensuring platform sustainability and growth.
 
-Table of Contents
+---
 
-Features
+## Features
 
-Tech Stack
+- **Decentralized Transactions**: Built on the Pi Network for secure and efficient payments.
+- **User-Friendly Marketplace**: List, browse, and purchase goods with ease.
+- **Secure Payments**: Ensures safe and reliable transactions for buyers and sellers.
+- **Multi-Chain Vision**: Future integration with Ethereum, Bitcoin, and Polygon for cross-chain compatibility.
+- **Dockerized Deployment**: Simplified deployment and scalability using Docker.
 
-Prerequisites
+---
 
-Installation and Setup
+## Technologies Used
 
-Running the Application
+### Backend
+- **Framework**: Flask
+- **Database**: PostgreSQL
+- **Authentication**: JSON Web Tokens (JWT)
+- **Dependencies**:
+  - Flask-MongoEngine
+  - Flask-JWT-Extended
+  - Werkzeug
+  - Gunicorn
 
-API Endpoints
+### Frontend
+- **Framework**: React.js
+- **Styling**: CSS/SCSS
 
-Using Pi Payments
+### Other Tools
+- **Containerization**: Docker
+- **Payment Integration**: Pi Network Payment Identifier
 
-Security Considerations
+---
 
-License
+## Installation and Setup
 
-Features
+### Prerequisites
 
-Buy, Sell, or Trade: Users can buy, sell, or trade various products, ranging from electronics to handmade crafts.
+Ensure you have the following installed:
+- Python 3.9+
+- Node.js and npm
+- PostgreSQL
+- Docker (optional, for containerized deployment)
 
-Responsive Design: The platform is optimized for mobile and desktop use, ensuring a smooth experience across devices.
+### Backend Setup
 
-Pi Network Integration: Secure, fast, and easy payments via the Pi Network cryptocurrency.
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/palace-of-goods.git
+   cd palace-of-goods/backend
 
-JWT-Based Authentication: Secure user authentication using JSON Web Tokens (JWT).
+2. Create and activate a virtual environment:
 
-Progressive Web App (PWA): Palace of Goods is a PWA, allowing users to install the app on their devices and use it offline.
+python -m venv venv
+source venv/bin/activate   # On Windows, use `venv\Scripts\activate`
 
-Tech Stack
 
-Frontend: React, Axios, Bootstrap, Service Workers (PWA)
+3. Install dependencies:
 
-Backend: Flask, MongoDB, JWT for authentication
+pip install -r requirements.txt
 
-Database: MongoDB
 
-Payments: Pi Network payments integration
+4. Configure environment variables:
 
-Containerization: Docker, Docker Compose
+Copy .env.example to .env and update it with your database credentials and Pi Network details.
 
-Prerequisites
 
-Before running the Palace of Goods application, make sure you have the following installed:
 
-Node.js (14+)
+5. Run the application:
 
-Python (3.9+)
+flask run
 
-MongoDB (or use Docker for the database)
 
-Docker (optional, for containerization)
 
-Pi Network Developer Account (for Pi Payments)
+Frontend Setup
 
-Installation and Setup
+1. Navigate to the frontend directory:
 
-Clone the Repository:
-git clone https://github.com/yourusername/palace-of-goods.git cd palace-of-goods
+cd ../frontend
 
-Set Up Environment Variables: You'll need to create .env files in both the frontend and backend directories.
-Backend .env (inside backend/ directory):
 
-SECRET_KEY=mysecretkey JWT_SECRET_KEY=myjwtsecretkey DATABASE_URL=mongodb://localhost:27017/palace-of-goods FLASK_ENV=development PI_API_KEY=your_pi_api_key
+2. Install dependencies:
 
-Frontend .env (inside frontend/ directory):
+npm install
 
-REACT_APP_API_URL=http://localhost:5000
 
-Install Dependencies: For Backend:
-cd backend pip install -r requirements.txt
+3. Start the development server:
 
-For Frontend:
+npm start
 
-cd frontend npm install
 
-Running the Application
 
-You can run the app either locally or using Docker.
 
-Running Locally:
-For Backend:
+---
 
-cd backend flask run
+Running with Docker
 
-The backend will run at http://localhost:5000.
+1. Ensure Docker is installed and running on your system.
 
-For Frontend:
 
-cd frontend npm start
+2. Build and run the Docker containers:
 
-The frontend will run at http://localhost:3000.
-
-Running with Docker: Build and Run using Docker Compose:
 docker-compose up --build
 
-Access the application:
+
+3. Access the app:
 
 Frontend: http://localhost:3000
 
-Backend API: http://localhost:5000/api
+Backend: http://localhost:5000
 
-API Endpoints
 
-The backend provides a RESTful API for managing products, users, and transactions.
 
-User Authentication:
 
-POST /api/register: Register a new user.
 
-POST /api/login: Login and get a JWT token.
+---
 
-Products:
+Usage
 
-GET /api/products: Fetch all products.
+1. Register/Login: Create an account or log in with existing credentials.
 
-POST /api/products: Create a new product (JWT required).
 
-Pi Payments:
+2. List Products: Add items to the marketplace by providing details and images.
 
-POST /api/pi/transaction: Initiate a Pi transaction.
 
-Using Pi Payments
+3. Browse Products: Search and filter products by categories or price range.
 
-To use Pi Network payments, ensure that you have:
 
-Pi Developer Account: Sign up and get your API Key.
+4. Purchase Items: Complete purchases securely through the Pi Network Payment Gateway.
 
-Configure .env: Add your Pi API Key to the backend .env file as PI_API_KEY.
 
-The Pi Network payments are integrated into the backend, allowing users to make secure payments using Pi cryptocurrency. For more information on Pi Network payments, refer to the Pi Developer Documentation.
+5. Track Orders: Manage your buying and selling activity in the user dashboard.
 
-Security Considerations
 
-JWT Authentication: The backend uses JWT tokens to secure protected routes and authenticate users.
 
-Password Hashing: All user passwords are hashed before being stored in the database.
 
-Environment Variables: Sensitive data like API keys and database URLs are stored in .env files and are not hardcoded into the application.
+---
 
-HTTPS: Ensure that the app is running behind HTTPS in production to secure communications between the client and server.
+Contributing
+
+We welcome contributions to Palace of Goods. Follow these steps to get involved:
+
+1. Fork the repository.
+
+
+2. Create a new branch:
+
+git checkout -b feature-name
+
+
+3. Commit your changes:
+
+git commit -m "Add your message here"
+
+
+4. Push to your branch:
+
+git push origin feature-name
+
+
+5. Create a pull request on GitHub.
+
+
+
+
+---
+
+Future Enhancements
+
+Cross-Chain Transactions: Extend support for Ethereum, Bitcoin, and Polygon.
+
+Mobile Application: Develop Android and iOS versions for enhanced accessibility.
+
+AI-Powered Recommendations: Offer personalized shopping experiences.
+
+Seller Ratings: Introduce a rating and review system for sellers.
+
+
+
+---
 
 License
 
-This project is licensed under the Pi Network trademark. See the LICENSE file for details.
+This project is licensed under the MIT License. See the LICENSE file for details.
+
+
+---
+
+Contact
+
+For inquiries, feedback, or support:
+
+Email: support@palaceofgoods.com
+
+GitHub Repository: Palace of Goods
+
+
+Thank you for being a part of the Palace of Goods community!
+
+This provides a fresh, clear structure for your project. You can modify it as needed!
+

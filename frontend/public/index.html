@@ -1,106 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Basic Setup, SEO, Open Graph, and Meta Tags as in your previous code -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Palace of Goods</title>
 
-  <!-- Pi Network SDK -->
-  <script src="https://sdk.minepi.com/pi-sdk.js" async></script> <!-- Load asynchronously -->
+    <!-- Pi Network SDK -->
+    <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+    <script>
+        // Initialize the Pi SDK in sandbox mode for testing
+        Pi.init({ version: "2.0", sandbox: true });
+    </script>
 </head>
 <body>
-  <div id="root"></div>
+    <h1>Welcome to Palace of Goods</h1>
+    <button onclick="authenticateUser()">Authenticate</button>
+    <button onclick="initiatePayment()">Make a Payment</button>
 
-  <!-- JavaScript and SDK Initialization -->
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      Pi.init({
-        version: "2.0",
-        sandbox: true,  // Change to false in production
-        appId: "your_pi_network_sdk_key"  // Replace with your actual app ID
-      });
-    });
-  </script>
+    <script>
+        let accessToken;
 
-  <!-- Payment Handling Script -->
-  <script>
-    const Pi = window.Pi;
-    let paymentId;
-    let accessToken = "user_access_token";  // Replace with a secure method for managing tokens
+        // Step 2: Authenticate the User
+        function authenticateUser() {
+            const scopes = ['payments', 'username'];
 
-    function createPayment() {
-      const paymentData = {
-        amount: 0.01,
-        memo: "Purchase from Palace of Goods",  // Updated description
-        metadata: { itemId: 123456 }  // Adjust metadata to match items in Palace of Goods
-      };
+            function onIncompletePaymentFound(payment) {
+                console.log('Incomplete payment found');
+                const paymentId = payment.identifier;
+                const txid = payment.transaction.txid;
 
-      const paymentCallbacks = {
-        onReadyForServerApproval: (paymentDTO) => {
-          paymentId = paymentDTO.identifier;
-          fetch('/payment/approve', {  // Adjust endpoint paths for Palace of Goods
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ paymentId, accessToken })
-          });
-        },
-        onReadyForServerCompletion: (paymentDTO, txid) => {
-          paymentId = paymentDTO.identifier;
-          fetch('/payment/complete', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ paymentId, txid })
-          });
-        },
-        onCancel: (paymentDTO) => {
-          paymentId = paymentDTO.identifier;
-          fetch('/payment/cancel', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ paymentId })
-          });
-        },
-        onError: (paymentDTO) => {
-          console.error('Payment error:', paymentDTO);
-          paymentId = paymentDTO.identifier;
-          fetch('/payment/error', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ paymentId })
-          });
-        },
-        onIncompletePaymentFound: (paymentDTO) => {
-          paymentId = paymentDTO.identifier;
-          const txid = paymentDTO.transaction.txid;
-          fetch('/payment/complete', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ paymentId, txid })
-          });
+                // Send incomplete payment details to server
+                fetch('/payment/complete', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ paymentId, txid, debug: 'cancel' })
+                }).then(response => response.json())
+                  .then(data => console.log("Incomplete payment handled:", data));
+            }
+
+            Pi.authenticate(scopes, onIncompletePaymentFound).then(function(auth) {
+                console.log(`Authentication successful!`);
+                accessToken = auth.accessToken; // Store the access token
+            }).catch(function(error) {
+                console.error("Authentication error:", error);
+            });
         }
-      };
 
-      Pi.createPayment(paymentData, paymentCallbacks);
-    }
+        // Step 3: Create Payment Data and Callbacks
+        function initiatePayment() {
+            const paymentData = {
+                amount: 5, // Specify the amount in Pi
+                memo: "Purchase on Palace of Goods",
+                metadata: { orderId: "12345", item: "Product A" }
+            };
 
-    // Authentication for Pi payments
-    const scopes = ['payments'];
+            const onReadyForServerApproval = (paymentId) => {
+                console.log("Ready for server approval:", paymentId);
+                fetch('/payments/approve', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ paymentId })
+                }).then(response => response.json())
+                  .then(data => console.log("Approval response:", data));
+            };
 
-    Pi.authenticate(scopes, (payment) => {
-      const paymentId = payment.identifier;
-      const txid = payment.transaction.txid;
-      fetch('/payment/complete', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ paymentId, txid })
-      });
-    }).then((auth) => {
-      console.log('Authentication successful:', auth);
-    }).catch((error) => {
-      console.error('Authentication error:', error);
-    });
-  </script>
+            const onReadyForServerCompletion = (paymentId, txid) => {
+                console.log("Ready for server completion:", paymentId, txid);
+                fetch('/payments/complete', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ paymentId, txid })
+                }).then(response => response.json())
+                  .then(data => console.log("Completion response:", data));
+            };
 
-  <!-- Additional JavaScript files -->
-  <script src="/static/js/bundle.js" defer></script>
-  <script src="/static/js/main.chunk.js" defer></script>
+            const onCancel = () => {
+                console.log("Payment was cancelled by the user.");
+            };
+
+            const onError = (error) => {
+                console.error("Payment error:", error);
+            };
+
+            const paymentCallbacks = {
+                onReadyForServerApproval,
+                onReadyForServerCompletion,
+                onCancel,
+                onError
+            };
+
+            // Initiate the payment with Pi Network
+            Pi.createPayment(paymentData, paymentCallbacks)
+                .then(function(payment) {
+                    console.log("Payment initiated:", payment);
+                })
+                .catch(function(error) {
+                    console.error("Error initiating payment:", error);
+                });
+        }
+    </script>
 </body>
-</html>

@@ -17,6 +17,41 @@
     ```
     python main.py
     ```
+## File Structure
+
+project-root/
+├── backend/
+│   ├── controllers/
+│   │   ├── authController.js
+│   │   ├── productController.js
+│   │   └── orderController.js
+│   ├── models/
+│   │   ├── user.js
+│   │   ├── product.js
+│   │   └── order.js
+│   ├── routes/
+│   │   ├── authRoutes.js
+│   │   ├── productRoutes.js
+│   │   └── orderRoutes.js
+│   ├── middleware/
+│   │   └── authMiddleware.js
+│   ├── config/
+│   │   ├── db.js
+│   │   └── stripe.js
+│   ├── .env
+│   ├── server.js
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── Login.js
+│   │   │   ├── Register.js
+│   │   │   ├── ProductList.js
+│   │   │   ├── Checkout.js
+│   │   │   └── OrderList.js
+│   │   ├── App.js
+│   │   └── index.js
+├── README.md
+└── package.json
 
 ## API Endpoints
 
@@ -24,8 +59,6 @@
 - POST /auth/login - Login with username and password
 - GET /products - Get all products
 - GET /products/<id> - Get product details by ID
-## API Endpoints (continued)
-
 - `POST /auth/register` - Register a new user
   - Request body: `{ "username": "username", "password": "password" }`
   - Response: `{ "message": "User registered" }`
@@ -52,3 +85,5 @@
 - `POST /products` - Add a new product
   - Request body: `{ "name": "Product name", "description": "Description", "price": 100.0 }`
   - Response: `{ "message": "Product added successfully" }`
+
+npm install bcryptjs jsonwebtoken

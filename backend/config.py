@@ -1,11 +1,11 @@
 import os
 from dotenv import load_dotenv
 
-# Determine environment and load corresponding .env file
+# Determine environment and load the corresponding .env file
 ENVIRONMENT = os.getenv("FLASK_ENV", "development")
 dotenv_path = f".env.{ENVIRONMENT}"
 
-# Load the .env file based on environment
+# Load the .env file based on the environment
 if not load_dotenv(dotenv_path):
     print(f"Warning: .env file for '{ENVIRONMENT}' environment not found. Default values may be used.")
 
