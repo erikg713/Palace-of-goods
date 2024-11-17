@@ -1,4 +1,80 @@
-/* Checkout Styles for Palace of Goods */
+.checkout-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.checkout-summary {
+  margin-bottom: 30px;
+}
+
+.checkout-items {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.checkout-item {
+  display: flex;
+  padding: 15px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.checkout-item-image {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  margin-right: 20px;
+}
+
+.checkout-item-details {
+  flex: 1;
+}
+
+.total-price {
+  font-size: 1.3em;
+  font-weight: bold;
+}
+
+.checkout-form label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.checkout-form input {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.payment-method label {
+  display: block;
+  margin: 10px 0;
+}
+
+.checkout-button {
+  background-color: #3498db;
+  color: white;
+  padding: 15px 30px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.1em;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.checkout-button:hover {
+  background-color: #2980b9;
+}
+
+.checkout-button:disabled {
+  background-color: #7f8c8d;
+  cursor: not-allowed;
+}/* Checkout Styles for Palace of Goods */
 
 .checkout-container {
   width: 100%;
