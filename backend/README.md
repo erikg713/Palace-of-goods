@@ -17,6 +17,40 @@
     ```
     python main.py
     ```
+## File Structure
+project-root/
+├── backend/
+│   ├── controllers/
+│   │   ├── authController.js
+│   │   ├── productController.js
+│   │   └── orderController.js
+│   ├── models/
+│   │   ├── user.js
+│   │   ├── product.js
+│   │   └── order.js
+│   ├── routes/
+│   │   ├── authRoutes.js
+│   │   ├── productRoutes.js
+│   │   └── orderRoutes.js
+│   ├── middleware/
+│   │   └── authMiddleware.js
+│   ├── config/
+│   │   ├── db.js
+│   │   └── stripe.js
+│   ├── .env
+│   ├── server.js
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── Login.js
+│   │   │   ├── Register.js
+│   │   │   ├── ProductList.js
+│   │   │   ├── Checkout.js
+│   │   │   └── OrderList.js
+│   │   ├── App.js
+│   │   └── index.js
+├── README.md
+└── package.json
 
 ## API Endpoints
 
