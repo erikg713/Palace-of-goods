@@ -18,6 +18,7 @@
     python main.py
     ```
 ## File Structure
+
 project-root/
 ├── backend/
 │   ├── controllers/
@@ -51,6 +52,7 @@ project-root/
 │   │   └── index.js
 ├── README.md
 └── package.json
+```
 
 ## API Endpoints
 
