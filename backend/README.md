@@ -85,3 +85,5 @@ project-root/
 - `POST /products` - Add a new product
   - Request body: `{ "name": "Product name", "description": "Description", "price": 100.0 }`
   - Response: `{ "message": "Product added successfully" }`
+
+npm install bcryptjs jsonwebtoken
