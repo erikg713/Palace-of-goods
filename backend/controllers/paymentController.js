@@ -1,3 +1,84 @@
+const PiNetwork = require('pi-backend');
+const dotenv = require('dotenv');
+dotenv.config();
+
+const apiKey = process.env.PI_API_KEY;
+const walletPrivateSeed = process.env.WALLET_PRIVATE_SEED;
+const pi = new PiNetwork(apiKey, walletPrivateSeed);
+
+// Create a payment
+exports.createPayment = async (req, res) => {
+  const { userUid, amount, memo, productId } = req.body;
+
+  // Payment data to send to Pi Network
+  const paymentData = {
+    amount,      // Payment amount
+    memo,        // Payment memo for the user
+    metadata: {  // Add metadata to associate with the payment
+      productId, 
+      userUid
+    },
+    uid: userUid
+  };
+
+  try {
+    // Request to Pi Network to create payment
+    const paymentId = await pi.createPayment(paymentData);
+
+    // Store payment details in DB (replace this with your actual DB logic)
+    await db.storePaymentData({
+      uid: userUid,
+      product_id: productId,
+      amount,
+      memo,
+      payment_id: paymentId,
+      txid: null,
+      status: 'created'
+    });
+
+    // Respond with the generated payment ID
+    res.json({ paymentId });
+  } catch (error) {
+    console.error('Payment creation failed:', error.message);
+    res.status(500).json({ error: 'Payment creation failed' });
+  }
+};
+
+// Submit Payment
+exports.submitPayment = async (req, res) => {
+  const { paymentId } = req.body;
+
+  try {
+    // Submit the payment through Pi Network
+    const txid = await pi.submitPayment(paymentId);
+
+    // Store the transaction ID and update payment status
+    await db.updatePaymentTxId(paymentId, txid);
+    await db.updatePaymentStatus(paymentId, 'submitted');
+    res.json({ txid });
+  } catch (error) {
+    console.error('Payment submission failed:', error.message);
+    res.status(500).json({ error: 'Payment submission failed' });
+  }
+};
+
+// Complete Payment
+exports.completePayment = async (req, res) => {
+  const { paymentId, txid } = req.body;
+
+  try {
+    // Complete the payment with the transaction ID
+    const completedPayment = await pi.completePayment(paymentId, txid);
+
+    // Store completed payment details and update status
+    await db.completePayment(paymentId, completedPayment);
+    await db.updatePaymentStatus(paymentId, 'completed');
+    res.json({ completedPayment });
+  } catch (error) {
+    console.error('Payment completion failed:', error.message);
+    res.status(500).json({ error: 'Payment completion failed' });
+  }
+};
 import db from '../config/db.js';
 import PiNetwork from 'pi-backend';
 import dotenv from 'dotenv';
