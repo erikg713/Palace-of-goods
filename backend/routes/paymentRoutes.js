@@ -37,3 +37,13 @@ router.post('/submit-payment', submitPayment);
 router.post('/complete-payment', completePayment);
 
 module.exports = router;
+const express = require('express');
+const { createPayment, submitPayment, completePayment } = require('../controllers/paymentController');
+const router = express.Router();
+
+// Payment Routes
+router.post('/create-payment', createPayment);
+router.post('/submit-payment', submitPayment);
+router.post('/complete-payment', completePayment);
+
+module.exports = router;
