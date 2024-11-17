@@ -1,4 +1,24 @@
 import React from 'react';
+import { BrowserRouter as Router } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+import AppRoutes from './routes';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import './App.css';
+
+const App = () => (
+  <Router>
+    <div>
+      <Navbar />
+      <ToastContainer />
+      <AppRoutes />
+      <Footer />
+    </div>
+  </Router>
+);
+
+export default App;import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
