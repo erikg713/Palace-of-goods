@@ -46,3 +46,14 @@ const HomePage = () => {
 };
 
 export default HomePage;
+
+import React from 'react';
+
+const Home = () => (
+  <div>
+    <h1>Welcome to Palace of Goods</h1>
+    <p>Your one-stop marketplace for Web3-powered shopping!</p>
+  </div>
+);
+
+export default Home;
