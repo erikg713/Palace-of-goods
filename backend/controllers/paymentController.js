@@ -138,3 +138,25 @@ exports.webhookHandler = async (req, res) => {
     res.status(400).send('Webhook error');
   }
 };
+const Payment = require('../models/payment');
+
+exports.createPayment = async (req, res) => {
+  const { userUid, amount, memo, productId } = req.body;
+  
+  // Create a new payment record in the DB
+  const newPayment = new Payment({
+    uid: userUid,
+    productId,
+    amount,
+    memo,
+    paymentId: 'generated_payment_id', // Will be replaced after Pi payment creation
+    status: 'created'
+  });
+
+  try {
+    await newPayment.save();
+    res.json({ paymentId: newPayment.paymentId });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to store payment data' });
+  }
+};
