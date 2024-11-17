@@ -1,3 +1,12 @@
+const express = require('express');
+const { protect } = require('../middleware/authMiddleware');
+const { createPayment, webhookHandler } = require('../controllers/paymentController');
+const router = express.Router();
+
+router.post('/create', protect, createPayment);
+router.post('/webhook', webhookHandler);
+
+module.exports = router;
 import express from 'express';
 import { createPayment } from '../controllers/paymentController.js';
 import validateRequest from '../middlewares/validateRequest.js';
