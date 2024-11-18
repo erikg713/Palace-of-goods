@@ -1,12 +1,13 @@
-const mongoose = require('mongoose');
+# backend/models/order.py
 
-const orderSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  products: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }],
-  totalAmount: { type: Number, required: true },
-  paymentStatus: { type: String, enum: ['pending', 'paid', 'cancelled'], default: 'pending' },
-  orderStatus: { type: String, enum: ['created', 'shipped', 'delivered'], default: 'created' },
-  createdAt: { type: Date, default: Date.now },
-});
+from mongoengine import Document, StringField, ListField, DecimalField
 
-module.exports = mongoose.model('Order', orderSchema);
+class Order(Document):
+    name = StringField(required=True)
+    email = StringField(required=True)
+    address = StringField(required=True)
+    payment_method = StringField(required=True)
+    total_price = DecimalField(required=True)
+    cart_items = ListField()
+
+    meta = {'collection': 'orders'}
