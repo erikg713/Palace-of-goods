@@ -80,7 +80,7 @@ const PaymentForm = () => {
         >
           <option value="">Select Payment Method</option>
           <option value="credit-card">Credit Card</option>
-          <option value="paypal">PayPal</option>
+          <option value="pinetwork">Pi Network</option>
         </select>
       </div>
       <button type="submit" className="btn btn-primary mt-3">Submit Order</button>
