@@ -1,3 +1,32 @@
+// frontend/src/App.js
+
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+import { ToastContainer } from 'react-toastify';
+import PaymentForm from './components/PaymentForm';
+import 'react-toastify/dist/ReactToastify.css'; // Toastify styles
+import './App.css'; // Custom styles
+
+const App = () => (
+  <Router>
+    <Navbar />
+
+    <div className="container mt-4">
+      <ToastContainer />
+
+      <Routes>
+        <Route path="/payment" element={<PaymentForm />} />
+      </Routes>
+    </div>
+
+    <Footer />
+  </Router>
+);
+
+export default App;
+
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
