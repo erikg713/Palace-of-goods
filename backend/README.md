@@ -1,4 +1,4 @@
-# Palace of Goods Backend
+# Palace of Goods Backend # (FLASK)
 
 ## Setup Instructions
 
