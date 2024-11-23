@@ -1,7 +1,13 @@
-Flask==2.2.5
-Flask-MongoEngine==0.9.5
+Flask==3.1.0
 Flask-JWT-Extended==4.3.1
+dependabot/pip/python-dotenv-1.0.1
 python-dotenv==1.0.1
 Werkzeug==3.0.3
+Flask-Cors==5.0.0
+Flask-SQLAlchemy==2.5.1
+Flask-MongoEngine==0.9.5
+python-dotenv==0.19.0
+Werkzeug==3.0.6
 gunicorn==22.0.0
-
+psycopg2-binary==2.9.10
+Flask-Login==0.6.3

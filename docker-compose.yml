@@ -1,58 +1,45 @@
 version: '3.8'
 
 services:
-  # Backend service
   backend:
-    build: ./backend
-    container_name: palace-backend
-    ports:
-      - "5000:5000"  # Expose port 5000 for Flask
-    environment:
-      - FLASK_ENV=${ENVIRONMENT}
-      - SECRET_KEY=${SECRET_KEY}
-      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
-      - DATABASE_URL=mongodb://db:27017/palace-of-goods  # MongoDB connection
-      - PI_API_KEY=${PI_API_KEY}
-      - DOMAIN_VALIDATION_KEY=${DOMAIN_VALIDATION_KEY}
+    build:
+      context: ./backend
+      args:
+        - FLASK_ENV=production
+    env_file:
+      - ./backend/.env.production
     volumes:
-      - ./backend:/app  # Mount backend directory to container for live code updates
-    networks:
-      - palace-network
+      - ./backend:/app
     depends_on:
-      - db  # Ensure MongoDB is up before starting backend
+      - db
 
-  # Frontend service
   frontend:
     build: ./frontend
-    container_name: palace-frontend
-    ports:
-      - "3000:3000"  # Expose port 3000 for React frontend
-    environment:
-      - REACT_APP_API_URL=http://backend:5000  # Backend API URL
     volumes:
-      - ./frontend:/app  # Mount frontend directory for live code updates
-    networks:
-      - palace-network
+      - ./frontend:/app
+    environment:
+      - NODE_ENV=production
 
-  # MongoDB service
   db:
-    image: mongo:4.4  # Using MongoDB version 4.4
-    container_name: palace-db
-    volumes:
-      - mongo-data:/data/db  # Persist MongoDB data
-    ports:
-      - "27017:27017"  # Expose MongoDB default port
+    image: postgres:13
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=${MONGODB_USERNAME}  # MongoDB root user
-      - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_PASSWORD}  # MongoDB root password
-    networks:
-      - palace-network
+      POSTGRES_USER: prod_user
+      POSTGRES_PASSWORD: prod_password
+      POSTGRES_DB: palace_of_goods_prod
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
 
-# Docker volumes to persist data
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - frontend
+      - backend
+
 volumes:
-  mongo-data:  # MongoDB data persistence
-
-# Network for inter-container communication
-networks:
-  palace-network:
-    driver: bridge
+  pgdata:
