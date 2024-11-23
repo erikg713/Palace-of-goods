@@ -1,24 +1,11 @@
-// In index.js
-import 'bootstrap/dist/css/bootstrap.min.css';import 'bootstrap/dist/css/bootstrap.min.css';
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
-import { AuthProvider } from './context/AuthContext';
-
-ReactDOM.render(
-  <AuthProvider>
-    <App />
-  </AuthProvider>,
-  document.getElementById('root')
-);
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import { AuthProvider } from './context/AuthContext';
 import { Web3Provider } from './context/Web3Context';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'react-toastify/dist/ReactToastify.css';
-import './App.css';
+import 'bootstrap/dist/css/bootstrap.min.css'; // Bootstrap CSS
+import 'react-toastify/dist/ReactToastify.css'; // Toastify CSS
+import './App.css'; // Custom styles
 
 ReactDOM.render(
   <React.StrictMode>

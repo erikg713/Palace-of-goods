@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 from models.order import Order
 from database import db_session
+import os
 
 app = Flask(__name__)
 CORS(app)  # Allow frontend to make API calls
@@ -38,4 +39,5 @@ def submit_order():
     return jsonify({"message": "Order submitted successfully!", "orderId": order.id}), 200
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    debug_mode = os.getenv('FLASK_DEBUG', 'False').lower() in ['true', '1', 't']
+    app.run(debug=debug_mode)
