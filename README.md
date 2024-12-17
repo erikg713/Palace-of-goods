@@ -5,6 +5,21 @@ Palace of Goods ensures secure, seamless, and transparent transactions while ena
 
 ---
 
+## Table of Contents
+
+1. [Features](#features)
+2. [Technologies Used](#technologies-used)
+3. [Installation and Setup](#installation-and-setup)
+   - [Backend Setup](#backend-setup)
+   - [Frontend Setup](#frontend-setup)
+   - [Dockerized Deployment](#dockerized-deployment)
+4. [Project Structure](#project-structure)
+5. [Future Roadmap](#future-roadmap)
+6. [Contributions](#contributions)
+7. [License](#license)
+
+---
+
 ## Features
 
 - **Decentralized Transactions**: Built on the Pi Network for secure and efficient payments.
@@ -40,6 +55,7 @@ Palace of Goods ensures secure, seamless, and transparent transactions while ena
 ## Installation and Setup
 
 ### Prerequisites
+
 Ensure the following tools are installed:
 - Python 3.9+
 - Node.js and npm
@@ -54,33 +70,3 @@ Ensure the following tools are installed:
    ```bash
    git clone https://github.com/yourusername/palace-of-goods.git
    cd palace-of-goods/backend
-
-   python -m venv venv
-source venv/bin/activate   # On Windows, use `venv\Scripts\activate`
-
-pip install -r requirements.txt
-
-flask run
-
-cd ../frontend
-
-npm install
-
-npm start
-
-docker-compose up --build
-
-git checkout -b feature-name
-
-git commit -m "Add your message here"
-
-git push origin feature-name
-
----
-
-### Key Additions:
-1. **API Reference Placeholder**: Developers may appreciate a dedicated API section.
-2. **Formatting Consistency**: Enhanced readability with bold headings and structured steps.
-3. **Clarity in Commands**: Clearer section headers for Docker, backend, and frontend.
-
----
