@@ -84,7 +84,3 @@ git push origin feature-name
 3. **Clarity in Commands**: Clearer section headers for Docker, backend, and frontend.
 
 ---
-
-**Suggestions for Next Steps:**
-**a.** Add API endpoint documentation with sample JSON requests and responses.  
-**b.** Provide screenshots or visuals for the user interface. Let me know if you need help generating these!
