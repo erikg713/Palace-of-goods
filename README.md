@@ -70,6 +70,7 @@ Ensure the following tools are installed:
    ```bash
    git clone https://github.com/yourusername/palace-of-goods.git
    cd palace-of-goods/backend
+
 2. Set up a virtual environment (optional but recommended):
 
 python -m venv venv
@@ -103,6 +104,22 @@ python run.py
 
 Your backend API will be available at http://localhost:5000.
 
+7. Palace-of-Goods/backend
+│
+├── app/                     # Main app folder  
+│   ├── __init__.py          # App factory  
+│   ├── models.py            # Database models  
+│   ├── routes/              # Folder for API routes  
+│   │   ├── __init__.py      # Blueprint init  
+│   │   ├── auth_routes.py   # User auth  
+│   │   ├── product_routes.py# Product management  
+│   │   ├── payment_routes.py# Payment handling  
+│   └── config.py            # Configurations (Pi Network + DB)  
+│
+├── requirements.txt         # Dependencies  
+├── Dockerfile               # Docker setup  
+├── docker-compose.yml       # Docker-compose (Backend + PostgreSQL)  
+└── run.py                   # Entry point for the app
 
 ---
 
